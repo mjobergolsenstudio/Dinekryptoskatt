@@ -3,334 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DinKryptoskatt — Kryptoskatt gjort enkelt for Norge</title>
-<meta name="description" content="Last opp CSV fra Binance, Coinbase, Kraken, Firi eller Kucoin og få en ferdig skattelerapport for Skatteetaten på under 2 minutter. Kun 199 kr.">
-<meta property="og:title" content="DinKryptoskatt — Kryptoskatt på 2 minutter">
-<meta property="og:description" content="Ferdig skatterapport for Skatteetaten. Last opp CSV fra din børs og vi gjør resten. 199 kr – ubegrenset.">
+<title>DineKryptoskatt — Kryptoskatt gjort enkelt for Norge</title>
+<meta name="description" content="Last opp CSV fra Binance, Coinbase, Kraken, Firi eller Kucoin og få en ferdig skatterapport for Skatteetaten på under 2 minutter. Kun 199 kr.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;1,9..144,300;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --ink: #0f0f0f;
-  --ink2: #2a2a2a;
-  --muted: #6b7280;
-  --light: #f5f3ef;
-  --white: #ffffff;
-  --accent: #1a6b3c;
-  --accent2: #2d9e5f;
-  --accent-light: #e8f5ee;
+  --ink: #0f0f0f; --ink2: #2a2a2a; --muted: #6b7280;
+  --light: #f5f3ef; --white: #ffffff;
+  --accent: #1a6b3c; --accent2: #2d9e5f; --accent-light: #e8f5ee;
   --border: #e5e0d8;
   --serif: 'Fraunces', Georgia, serif;
   --sans: 'DM Sans', system-ui, sans-serif;
   --radius: 16px;
 }
-
 html { scroll-behavior: smooth; }
 body { font-family: var(--sans); background: var(--white); color: var(--ink); overflow-x: hidden; }
-
-/* NAV */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 48px;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-}
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 16px 48px; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
 .nav-logo { font-family: var(--serif); font-size: 20px; font-weight: 700; color: var(--ink); text-decoration: none; }
 .nav-logo span { color: var(--accent); }
 .nav-links { display: flex; align-items: center; gap: 32px; }
 .nav-links a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
 .nav-links a:hover { color: var(--ink); }
-.nav-cta {
-  background: var(--ink); color: var(--white);
-  padding: 10px 22px; border-radius: 100px;
-  font-size: 14px; font-weight: 500; text-decoration: none;
-  transition: all 0.2s;
-}
-.nav-cta:hover { background: var(--ink2); transform: translateY(-1px); }
-
-/* HERO */
-.hero {
-  min-height: 100vh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center;
-  padding: 120px 24px 80px;
-  background: var(--light);
-  position: relative; overflow: hidden;
-}
-.hero::before {
-  content: '';
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(26,107,60,0.08) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 40% at 80% 80%, rgba(26,107,60,0.05) 0%, transparent 60%);
-}
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--accent-light); color: var(--accent);
-  padding: 6px 16px; border-radius: 100px;
-  font-size: 13px; font-weight: 500; margin-bottom: 32px;
-  border: 1px solid rgba(26,107,60,0.2);
-  animation: fadeUp 0.6s ease-out;
-}
+.nav-cta { background: var(--ink); color: var(--white); padding: 10px 22px; border-radius: 100px; font-size: 14px; font-weight: 500; text-decoration: none; transition: all 0.2s; }
+.nav-cta:hover { background: var(--accent); }
+.hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 24px 80px; background: var(--light); position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(26,107,60,0.08) 0%, transparent 70%); }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-light); color: var(--accent); padding: 6px 16px; border-radius: 100px; font-size: 13px; font-weight: 500; margin-bottom: 32px; border: 1px solid rgba(26,107,60,0.2); animation: fadeUp 0.6s ease-out; }
 .hero-badge-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-.hero h1 {
-  font-family: var(--serif);
-  font-size: clamp(48px, 7vw, 88px);
-  font-weight: 300; line-height: 1.05;
-  letter-spacing: -2px; color: var(--ink);
-  max-width: 900px; margin-bottom: 24px;
-  animation: fadeUp 0.6s 0.1s ease-out backwards;
-}
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+.hero h1 { font-family: var(--serif); font-size: clamp(48px,7vw,88px); font-weight: 300; line-height: 1.05; letter-spacing: -2px; color: var(--ink); max-width: 900px; margin-bottom: 24px; animation: fadeUp 0.6s 0.1s ease-out backwards; }
 .hero h1 em { font-style: italic; color: var(--accent); }
-.hero p {
-  font-size: 18px; color: var(--muted); max-width: 520px;
-  line-height: 1.7; margin-bottom: 40px;
-  animation: fadeUp 0.6s 0.2s ease-out backwards;
-}
-.hero-actions {
-  display: flex; gap: 12px; align-items: center;
-  animation: fadeUp 0.6s 0.3s ease-out backwards;
-}
-.btn-hero {
-  background: var(--ink); color: var(--white);
-  padding: 16px 32px; border-radius: 100px;
-  font-size: 16px; font-weight: 500; text-decoration: none;
-  transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
-}
+.hero p { font-size: 18px; color: var(--muted); max-width: 520px; line-height: 1.7; margin-bottom: 40px; animation: fadeUp 0.6s 0.2s ease-out backwards; }
+.hero-actions { display: flex; gap: 12px; align-items: center; animation: fadeUp 0.6s 0.3s ease-out backwards; }
+.btn-hero { background: var(--ink); color: var(--white); padding: 16px 32px; border-radius: 100px; font-size: 16px; font-weight: 500; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
 .btn-hero:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,107,60,0.25); }
-.btn-hero-outline {
-  color: var(--ink); padding: 16px 32px; border-radius: 100px;
-  font-size: 16px; font-weight: 500; text-decoration: none;
-  border: 1.5px solid var(--border); transition: all 0.2s;
-  background: var(--white);
-}
+.btn-hero-outline { color: var(--ink); padding: 16px 32px; border-radius: 100px; font-size: 16px; font-weight: 500; text-decoration: none; border: 1.5px solid var(--border); transition: all 0.2s; background: var(--white); }
 .btn-hero-outline:hover { border-color: var(--ink); }
-.hero-price {
-  margin-top: 20px; font-size: 14px; color: var(--muted);
-  animation: fadeUp 0.6s 0.4s ease-out backwards;
-}
+.hero-price { margin-top: 20px; font-size: 14px; color: var(--muted); animation: fadeUp 0.6s 0.4s ease-out backwards; }
 .hero-price strong { color: var(--ink); }
-
-/* SOCIAL PROOF BAR */
-.proof-bar {
-  background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-  padding: 20px 48px;
-  display: flex; align-items: center; justify-content: center; gap: 48px;
-}
+.proof-bar { background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 20px 48px; display: flex; align-items: center; justify-content: center; gap: 48px; flex-wrap: wrap; }
 .proof-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
-.proof-icon { font-size: 18px; }
-
-/* EXCHANGES */
-.exchanges {
-  padding: 80px 24px;
-  text-align: center; background: var(--white);
-}
+.exchanges { padding: 80px 24px; text-align: center; background: var(--white); }
 .exchanges h2 { font-family: var(--serif); font-size: 36px; font-weight: 300; margin-bottom: 12px; }
 .exchanges p { color: var(--muted); font-size: 16px; margin-bottom: 48px; }
-.exchange-grid {
-  display: flex; justify-content: center; align-items: center;
-  gap: 16px; flex-wrap: wrap; max-width: 700px; margin: 0 auto;
-}
-.exchange-card {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 24px; border-radius: 12px;
-  border: 1.5px solid var(--border); background: var(--white);
-  font-size: 15px; font-weight: 500;
-  transition: all 0.2s;
-}
+.exchange-grid { display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; max-width: 700px; margin: 0 auto; }
+.exchange-card { display: flex; align-items: center; gap: 12px; padding: 14px 24px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--white); font-size: 15px; font-weight: 500; transition: all 0.2s; }
 .exchange-card:hover { border-color: var(--accent); background: var(--accent-light); transform: translateY(-2px); }
-.exchange-logo {
-  width: 32px; height: 32px; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700; color: white;
-}
-.el-binance { background: #f3a117; }
-.el-coinbase { background: #0052ff; }
-.el-kraken { background: #5741d9; }
-.el-firi { background: #ff5b35; }
-.el-kucoin { background: #00a478; }
-
-/* HOW IT WORKS */
-.how {
-  padding: 100px 24px;
-  background: var(--light);
-}
+.exchange-logo { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: white; }
+.el-binance{background:#f3a117}.el-coinbase{background:#0052ff}.el-kraken{background:#5741d9}.el-firi{background:#ff5b35}.el-kucoin{background:#00a478}
+.how { padding: 100px 24px; background: var(--light); }
 .how-inner { max-width: 900px; margin: 0 auto; }
 .section-label { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); font-weight: 600; margin-bottom: 16px; }
-.how h2 { font-family: var(--serif); font-size: clamp(36px, 5vw, 52px); font-weight: 300; line-height: 1.2; margin-bottom: 60px; }
-.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.how h2 { font-family: var(--serif); font-size: clamp(36px,5vw,52px); font-weight: 300; line-height: 1.2; margin-bottom: 60px; }
+.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 32px; }
 .step { position: relative; }
-.step-num {
-  font-family: var(--serif); font-size: 64px; font-weight: 300;
-  color: var(--border); line-height: 1; margin-bottom: 16px;
-}
+.step-num { font-family: var(--serif); font-size: 64px; font-weight: 300; color: var(--border); line-height: 1; margin-bottom: 16px; }
 .step h3 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
 .step p { font-size: 15px; color: var(--muted); line-height: 1.7; }
-.step-connector {
-  position: absolute; top: 32px; right: -16px;
-  width: 32px; height: 2px; background: var(--border);
-}
-
-/* FEATURES */
-.features {
-  padding: 100px 24px;
-  background: var(--white);
-}
+.step-connector { position: absolute; top: 32px; right: -16px; width: 32px; height: 2px; background: var(--border); }
+.features { padding: 100px 24px; background: var(--white); }
 .features-inner { max-width: 1100px; margin: 0 auto; }
 .features-header { text-align: center; margin-bottom: 60px; }
-.features-header h2 { font-family: var(--serif); font-size: clamp(36px, 5vw, 52px); font-weight: 300; }
-.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); border-radius: var(--radius); overflow: hidden; }
-.feature {
-  background: var(--white); padding: 36px;
-  transition: background 0.2s;
-}
+.features-header h2 { font-family: var(--serif); font-size: clamp(36px,5vw,52px); font-weight: 300; }
+.features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; background: var(--border); border-radius: var(--radius); overflow: hidden; }
+.feature { background: var(--white); padding: 36px; transition: background 0.2s; }
 .feature:hover { background: var(--accent-light); }
 .feature-icon { font-size: 28px; margin-bottom: 16px; }
 .feature h3 { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
 .feature p { font-size: 14px; color: var(--muted); line-height: 1.7; }
-
-/* COMPARE */
-.compare {
-  padding: 100px 24px;
-  background: var(--light);
-}
+.compare { padding: 100px 24px; background: var(--light); }
 .compare-inner { max-width: 800px; margin: 0 auto; text-align: center; }
-.compare h2 { font-family: var(--serif); font-size: clamp(36px, 5vw, 52px); font-weight: 300; margin-bottom: 48px; }
+.compare h2 { font-family: var(--serif); font-size: clamp(36px,5vw,52px); font-weight: 300; margin-bottom: 48px; }
 .compare-table { background: var(--white); border-radius: var(--radius); overflow: hidden; border: 1.5px solid var(--border); text-align: left; }
 .compare-table table { width: 100%; border-collapse: collapse; }
-.compare-table th {
-  padding: 16px 24px; font-size: 13px; font-weight: 600;
-  background: var(--light); border-bottom: 1.5px solid var(--border);
-}
-.compare-table th:first-child { width: 40%; }
+.compare-table th { padding: 16px 24px; font-size: 13px; font-weight: 600; background: var(--light); border-bottom: 1.5px solid var(--border); }
 .compare-table th.us { color: var(--accent); }
 .compare-table td { padding: 14px 24px; font-size: 14px; border-bottom: 1px solid var(--border); }
 .compare-table tr:last-child td { border-bottom: none; }
 .compare-table td:not(:first-child) { text-align: center; }
 .check { color: var(--accent); font-size: 18px; }
-.cross { color: #d1d5db; font-size: 18px; }
+.cross { color: #d1d5db; }
 .highlight-col { background: rgba(26,107,60,0.04); }
-
-/* PRICING */
-.pricing {
-  padding: 100px 24px;
-  background: var(--white); text-align: center;
-}
-.pricing h2 { font-family: var(--serif); font-size: clamp(36px, 5vw, 52px); font-weight: 300; margin-bottom: 16px; }
+.pricing { padding: 100px 24px; background: var(--white); text-align: center; }
+.pricing h2 { font-family: var(--serif); font-size: clamp(36px,5vw,52px); font-weight: 300; margin-bottom: 16px; }
 .pricing-sub { color: var(--muted); font-size: 16px; margin-bottom: 48px; }
-.price-card {
-  max-width: 420px; margin: 0 auto;
-  background: var(--ink); color: var(--white);
-  border-radius: 24px; padding: 48px;
-  position: relative; overflow: hidden;
-}
-.price-card::before {
-  content: '';
-  position: absolute; top: -60px; right: -60px;
-  width: 200px; height: 200px; border-radius: 50%;
-  background: rgba(255,255,255,0.04);
-}
+.price-card { max-width: 420px; margin: 0 auto; background: var(--ink); color: var(--white); border-radius: 24px; padding: 48px; }
 .price-label { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
 .price-amount { font-family: var(--serif); font-size: 80px; font-weight: 300; line-height: 1; margin-bottom: 4px; }
 .price-period { font-size: 16px; color: rgba(255,255,255,0.6); margin-bottom: 32px; }
 .price-features { list-style: none; text-align: left; margin-bottom: 36px; display: flex; flex-direction: column; gap: 12px; }
 .price-features li { display: flex; align-items: center; gap: 12px; font-size: 15px; }
 .price-features li::before { content: '✓'; color: var(--accent2); font-weight: 700; }
-.btn-buy {
-  display: block; background: var(--white); color: var(--ink);
-  padding: 16px; border-radius: 100px; font-size: 16px; font-weight: 600;
-  text-decoration: none; transition: all 0.2s;
-}
+.btn-buy { display: block; background: var(--white); color: var(--ink); padding: 16px; border-radius: 100px; font-size: 16px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
 .btn-buy:hover { background: var(--accent-light); color: var(--accent); }
 .price-note { font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 16px; }
-.intro-badge {
-  display: inline-block; background: var(--accent); color: white;
-  padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 600;
-  margin-bottom: 20px;
-}
-
-/* FAQ */
-.faq {
-  padding: 100px 24px;
-  background: var(--light);
-}
+.intro-badge { display: inline-block; background: var(--accent); color: white; padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; margin-bottom: 20px; }
+.faq { padding: 100px 24px; background: var(--light); }
 .faq-inner { max-width: 680px; margin: 0 auto; }
 .faq h2 { font-family: var(--serif); font-size: 42px; font-weight: 300; margin-bottom: 48px; }
 .faq-item { border-bottom: 1px solid var(--border); }
-.faq-q {
-  width: 100%; background: none; border: none; padding: 22px 0;
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: 16px; font-weight: 500; cursor: pointer; font-family: var(--sans);
-  text-align: left; color: var(--ink);
-}
+.faq-q { width: 100%; background: none; border: none; padding: 22px 0; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 500; cursor: pointer; font-family: var(--sans); text-align: left; color: var(--ink); }
 .faq-q:hover { color: var(--accent); }
 .faq-icon { font-size: 20px; color: var(--muted); flex-shrink: 0; transition: transform 0.2s; }
 .faq-a { font-size: 15px; color: var(--muted); line-height: 1.7; padding-bottom: 20px; display: none; }
 .faq-item.open .faq-a { display: block; }
 .faq-item.open .faq-icon { transform: rotate(45deg); }
-
-/* CTA */
-.cta-section {
-  padding: 120px 24px;
-  background: var(--ink); color: var(--white);
-  text-align: center;
-}
-.cta-section h2 { font-family: var(--serif); font-size: clamp(40px, 6vw, 72px); font-weight: 300; margin-bottom: 20px; }
+.krysspromo { background: var(--white); padding: 60px 24px; border-top: 1px solid var(--border); }
+.krysspromo-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; gap: 24px; background: var(--light); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 28px 32px; transition: border-color 0.2s; }
+.krysspromo-inner:hover { border-color: var(--accent); }
+.krysspromo-label { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; margin-bottom: 6px; }
+.krysspromo-title { font-family: var(--serif); font-size: 20px; font-weight: 300; color: var(--ink); margin-bottom: 6px; }
+.krysspromo-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.krysspromo-btn { background: var(--ink); color: var(--white); padding: 12px 22px; border-radius: 100px; font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; flex-shrink: 0; transition: background 0.2s; }
+.krysspromo-btn:hover { background: var(--accent); }
+.cta-section { padding: 120px 24px; background: var(--ink); color: var(--white); text-align: center; }
+.cta-section h2 { font-family: var(--serif); font-size: clamp(40px,6vw,72px); font-weight: 300; margin-bottom: 20px; }
 .cta-section h2 em { font-style: italic; color: var(--accent2); }
 .cta-section p { font-size: 18px; color: rgba(255,255,255,0.6); margin-bottom: 40px; }
-.btn-cta-white {
-  display: inline-block; background: var(--white); color: var(--ink);
-  padding: 18px 40px; border-radius: 100px;
-  font-size: 17px; font-weight: 600; text-decoration: none;
-  transition: all 0.2s;
-}
+.btn-cta-white { display: inline-block; background: var(--white); color: var(--ink); padding: 18px 40px; border-radius: 100px; font-size: 17px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
 .btn-cta-white:hover { background: var(--accent-light); color: var(--accent); transform: translateY(-2px); }
-
-/* FOOTER */
-footer {
-  background: var(--ink); border-top: 1px solid rgba(255,255,255,0.08);
-  padding: 40px 48px;
-  display: flex; justify-content: space-between; align-items: center;
-  color: rgba(255,255,255,0.4); font-size: 14px;
-}
+footer { background: var(--ink); border-top: 1px solid rgba(255,255,255,0.08); padding: 40px 48px; display: flex; justify-content: space-between; align-items: center; color: rgba(255,255,255,0.4); font-size: 14px; }
 footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
 footer a:hover { color: white; }
-
-/* ANIMATIONS */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.reveal {
-  opacity: 0; transform: translateY(24px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)} }
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
-
-/* MOBILE */
-@media (max-width: 768px) {
-  nav { padding: 14px 20px; }
-  .nav-links { display: none; }
-  .proof-bar { flex-wrap: wrap; gap: 20px; padding: 20px; }
-  .steps { grid-template-columns: 1fr; }
-  .step-connector { display: none; }
-  .features-grid { grid-template-columns: 1fr; }
-  .hero-actions { flex-direction: column; width: 100%; }
-  .btn-hero, .btn-hero-outline { width: 100%; justify-content: center; }
-  footer { flex-direction: column; gap: 16px; text-align: center; }
+@media(max-width:768px){
+  nav{padding:14px 20px}.nav-links{display:none}
+  .steps{grid-template-columns:1fr}.step-connector{display:none}
+  .features-grid{grid-template-columns:1fr}
+  .hero-actions{flex-direction:column;width:100%}
+  .btn-hero,.btn-hero-outline{width:100%;justify-content:center}
+  .krysspromo-inner{flex-direction:column;text-align:center}
+  footer{flex-direction:column;gap:16px;text-align:center}
 }
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="/" class="nav-logo">Din<span>Kryptoskatt</span></a>
+  <a href="/" class="nav-logo">Dine<span>Kryptoskatt</span></a>
   <div class="nav-links">
     <a href="#hvordan">Hvordan det fungerer</a>
     <a href="#børser">Støttede børser</a>
@@ -340,12 +154,8 @@ footer a:hover { color: white; }
   <a href="app.html" class="nav-cta">Start nå →</a>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
-  <div class="hero-badge">
-    <div class="hero-badge-dot"></div>
-    Introår – kun 199 kr
-  </div>
+  <div class="hero-badge"><div class="hero-badge-dot"></div> Introår – kun 199 kr</div>
   <h1>Kryptoskatt gjort<br><em>helt enkelt</em></h1>
   <p>Last opp CSV fra din børs og få en ferdig skatterapport for Skatteetaten på under 2 minutter. Ingen regneark, ingen hodepine.</p>
   <div class="hero-actions">
@@ -355,45 +165,27 @@ footer a:hover { color: white; }
   <div class="hero-price">Kun <strong>199 kr</strong> for hele skatteåret 2025 · Ubegrenset antall transaksjoner</div>
 </section>
 
-<!-- PROOF BAR -->
 <div class="proof-bar">
-  <div class="proof-item"><span class="proof-icon">🇳🇴</span> Laget for norske skatteregler</div>
-  <div class="proof-item"><span class="proof-icon">⚡</span> Under 2 minutter</div>
-  <div class="proof-item"><span class="proof-icon">🔒</span> Ingen lagring av nøkler</div>
-  <div class="proof-item"><span class="proof-icon">📄</span> Klar for Skatteetaten</div>
+  <div class="proof-item"><span>🇳🇴</span> Laget for norske skatteregler</div>
+  <div class="proof-item"><span>⚡</span> Under 2 minutter</div>
+  <div class="proof-item"><span>🔒</span> Ingen lagring av nøkler</div>
+  <div class="proof-item"><span>📄</span> Klar for Skatteetaten</div>
 </div>
 
-<!-- EXCHANGES -->
 <section class="exchanges" id="børser">
   <div class="section-label reveal">Støttede børser</div>
   <h2 class="reveal">De 5 største børsene i Norge</h2>
   <p class="reveal">Last ned CSV fra din børs – vi tar oss av resten</p>
   <div class="exchange-grid reveal">
-    <div class="exchange-card">
-      <div class="exchange-logo el-binance">B</div>
-      Binance
-    </div>
-    <div class="exchange-card">
-      <div class="exchange-logo el-coinbase">C</div>
-      Coinbase
-    </div>
-    <div class="exchange-card">
-      <div class="exchange-logo el-kraken">K</div>
-      Kraken
-    </div>
-    <div class="exchange-card">
-      <div class="exchange-logo el-firi">F</div>
-      Firi
-    </div>
-    <div class="exchange-card">
-      <div class="exchange-logo el-kucoin">K</div>
-      Kucoin
-    </div>
+    <div class="exchange-card"><div class="exchange-logo el-binance">B</div> Binance</div>
+    <div class="exchange-card"><div class="exchange-logo el-coinbase">C</div> Coinbase</div>
+    <div class="exchange-card"><div class="exchange-logo el-kraken">K</div> Kraken</div>
+    <div class="exchange-card"><div class="exchange-logo el-firi">F</div> Firi</div>
+    <div class="exchange-card"><div class="exchange-logo el-kucoin">K</div> Kucoin</div>
   </div>
-  <p class="reveal" style="margin-top:24px;font-size:14px;color:var(--muted)">Bruker du en annen børs? <a href="mailto:hei@dinkryptoskatt.no" style="color:var(--accent)">Send oss en melding →</a></p>
+  <p class="reveal" style="margin-top:24px;font-size:14px;color:var(--muted)">Bruker du en annen børs? <a href="mailto:hei@dinekryptoskatt.no" style="color:var(--accent)">Send oss en melding →</a></p>
 </section>
 
-<!-- HOW IT WORKS -->
 <section class="how" id="hvordan">
   <div class="how-inner">
     <div class="section-label reveal">Hvordan det fungerer</div>
@@ -420,7 +212,6 @@ footer a:hover { color: white; }
   </div>
 </section>
 
-<!-- FEATURES -->
 <section class="features">
   <div class="features-inner">
     <div class="features-header">
@@ -428,41 +219,16 @@ footer a:hover { color: white; }
       <h2 class="reveal">Alt du trenger.<br>Ingenting du ikke trenger.</h2>
     </div>
     <div class="features-grid reveal">
-      <div class="feature">
-        <div class="feature-icon">📊</div>
-        <h3>FIFO-beregning</h3>
-        <p>Norsk skatteregel fulgt til punkt og prikke. Alle gevinster og tap beregnet korrekt.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">📄</div>
-        <h3>PDF-skatterapport</h3>
-        <p>Klar til å bruke i skattemeldingen. Ingen tolk­ning nødvendig – bare kopier tallene.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">📈</div>
-        <h3>Porteføljeoversikt</h3>
-        <p>Se gevinst og tap per mynt, per måned, og totalt for skatteåret.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🔒</div>
-        <h3>Ingen API-nøkler</h3>
-        <p>Vi ber aldri om passord eller API-nøkler. Du laster opp CSV – ingenting annet.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">⚡</div>
-        <h3>Under 2 minutter</h3>
-        <p>Fra CSV til ferdig rapport. Raskeste løsningen på markedet.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🇳🇴</div>
-        <h3>Norsk og enkelt</h3>
-        <p>Laget for norske brukere med norske skatteregler. Ingen engelsk fagterminologi.</p>
-      </div>
+      <div class="feature"><div class="feature-icon">📊</div><h3>FIFO-beregning</h3><p>Norsk skatteregel fulgt til punkt og prikke. Alle gevinster og tap beregnet korrekt.</p></div>
+      <div class="feature"><div class="feature-icon">📄</div><h3>PDF-skatterapport</h3><p>Klar til å bruke i skattemeldingen. Ingen tolkning nødvendig – bare kopier tallene.</p></div>
+      <div class="feature"><div class="feature-icon">📈</div><h3>Porteføljeoversikt</h3><p>Se gevinst og tap per mynt, per måned, og totalt for skatteåret.</p></div>
+      <div class="feature"><div class="feature-icon">🔒</div><h3>Ingen API-nøkler</h3><p>Vi ber aldri om passord eller API-nøkler. Du laster opp CSV – ingenting annet.</p></div>
+      <div class="feature"><div class="feature-icon">⚡</div><h3>Under 2 minutter</h3><p>Fra CSV til ferdig rapport. Raskeste løsningen på markedet.</p></div>
+      <div class="feature"><div class="feature-icon">🇳🇴</div><h3>Norsk og enkelt</h3><p>Laget for norske brukere med norske skatteregler. Ingen engelsk fagterminologi.</p></div>
     </div>
   </div>
 </section>
 
-<!-- COMPARE -->
 <section class="compare">
   <div class="compare-inner">
     <div class="section-label reveal">Sammenligning</div>
@@ -470,62 +236,29 @@ footer a:hover { color: white; }
     <div class="compare-table reveal">
       <table>
         <thead>
-          <tr>
-            <th></th>
-            <th class="us highlight-col">DinKryptoskatt</th>
-            <th>Kryptosekken</th>
-          </tr>
+          <tr><th></th><th class="us highlight-col">DineKryptoskatt</th><th>Kryptosekken</th></tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Pris per år</td>
-            <td class="highlight-col"><strong>199 kr</strong></td>
-            <td>299–699 kr</td>
-          </tr>
-          <tr>
-            <td>Ubegrenset transaksjoner</td>
-            <td class="highlight-col"><span class="check">✓</span></td>
-            <td><span class="cross">✗ (krever dyreste plan)</span></td>
-          </tr>
-          <tr>
-            <td>Norsk grensesnitt</td>
-            <td class="highlight-col"><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td>FIFO-beregning</td>
-            <td class="highlight-col"><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td>PDF-rapport</td>
-            <td class="highlight-col"><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td>Enkelt og moderne design</td>
-            <td class="highlight-col"><span class="check">✓</span></td>
-            <td><span class="cross">✗</span></td>
-          </tr>
-          <tr>
-            <td>Under 2 minutter</td>
-            <td class="highlight-col"><span class="check">✓</span></td>
-            <td><span class="cross">✗</span></td>
-          </tr>
+          <tr><td>Pris per år</td><td class="highlight-col"><strong>199 kr</strong></td><td>299–699 kr</td></tr>
+          <tr><td>Ubegrenset transaksjoner</td><td class="highlight-col"><span class="check">✓</span></td><td><span class="cross">✗</span></td></tr>
+          <tr><td>Norsk grensesnitt</td><td class="highlight-col"><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+          <tr><td>FIFO-beregning</td><td class="highlight-col"><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+          <tr><td>PDF-rapport</td><td class="highlight-col"><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+          <tr><td>Enkelt og moderne design</td><td class="highlight-col"><span class="check">✓</span></td><td><span class="cross">✗</span></td></tr>
+          <tr><td>Under 2 minutter</td><td class="highlight-col"><span class="check">✓</span></td><td><span class="cross">✗</span></td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </section>
 
-<!-- PRICING -->
 <section class="pricing" id="pris">
   <div class="section-label reveal">Pris</div>
   <h2 class="reveal">Én pris. Ingen overraskelser.</h2>
   <p class="pricing-sub reveal">Betal én gang for hele skatteåret 2025</p>
   <div class="price-card reveal">
     <div class="intro-badge">🎉 Introår-pris</div>
-    <div class="price-label">DinKryptoskatt 2025</div>
+    <div class="price-label">DineKryptoskatt 2025</div>
     <div class="price-amount">199</div>
     <div class="price-period">kr · én gang · skatteår 2025</div>
     <ul class="price-features">
@@ -541,63 +274,52 @@ footer a:hover { color: white; }
   </div>
 </section>
 
-<!-- FAQ -->
 <section class="faq" id="faq">
   <div class="faq-inner">
     <h2 class="reveal">Vanlige spørsmål</h2>
-
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Er det trygt å laste opp CSV-filen min?
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a">CSV-filen din inneholder kun transaksjonshistorikk – ingen passord eller private nøkler. Vi ber aldri om API-nøkler. Filen behandles sikkert og slettes etter beregningen.</div>
+      <button class="faq-q" onclick="toggleFaq(this)">Er det trygt å laste opp CSV-filen min?<span class="faq-icon">+</span></button>
+      <div class="faq-a">CSV-filen inneholder kun transaksjonshistorikk – ingen passord eller private nøkler. Vi ber aldri om API-nøkler.</div>
     </div>
-
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Hvordan laster jeg ned CSV fra min børs?
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a">Inne i appen finner du en steg-for-steg guide for hver børs. Det tar vanligvis under ett minutt. For Binance: Konto → Ordre → Transaksjonshistorikk → Eksporter.</div>
+      <button class="faq-q" onclick="toggleFaq(this)">Hvordan laster jeg ned CSV fra min børs?<span class="faq-icon">+</span></button>
+      <div class="faq-a">Inne i appen finner du en steg-for-steg guide for hver børs. For Binance: Konto → Ordre → Transaksjonshistorikk → Eksporter.</div>
     </div>
-
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Hva er FIFO og er det riktig metode?
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a">FIFO betyr "First In, First Out" – de første myntene du kjøpte regnes som de første du solgte. Skatteetaten krever denne metoden for kryptovaluta i Norge.</div>
+      <button class="faq-q" onclick="toggleFaq(this)">Hva er FIFO og er det riktig metode?<span class="faq-icon">+</span></button>
+      <div class="faq-a">FIFO betyr "First In, First Out". Skatteetaten krever denne metoden for kryptovaluta i Norge.</div>
     </div>
-
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Hva skjer hvis jeg bruker flere børser?
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a">Du kan laste opp CSV fra alle 5 støttede børser i samme rapport. Vi slår dem sammen og beregner skatten på tvers av alle transaksjoner.</div>
+      <button class="faq-q" onclick="toggleFaq(this)">Hva skjer hvis jeg bruker flere børser?<span class="faq-icon">+</span></button>
+      <div class="faq-a">Du kan laste opp CSV fra alle 5 støttede børser i samme rapport. Vi slår dem sammen automatisk.</div>
     </div>
-
     <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Har jeg krav på pengene tilbake?
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a">Ja. Hvis du ikke er fornøyd innen 14 dager refunderer vi hele beløpet – ingen spørsmål stilt. Send en e-post til hei@dinkryptoskatt.no.</div>
+      <button class="faq-q" onclick="toggleFaq(this)">Har jeg krav på pengene tilbake?<span class="faq-icon">+</span></button>
+      <div class="faq-a">Ja. Ikke fornøyd innen 14 dager? Full refusjon – ingen spørsmål. Send e-post til hei@dinekryptoskatt.no.</div>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
+<section class="krysspromo">
+  <div class="krysspromo-inner">
+    <div style="font-size:36px;flex-shrink:0">📊</div>
+    <div style="flex:1">
+      <div class="krysspromo-label">Trenger du også hjelp med vanlig skatt?</div>
+      <div class="krysspromo-title">Skatteberegner.no analyserer hele skattemeldingen din</div>
+      <div class="krysspromo-desc">Last opp PDF av skattemeldingen – AI finner alle fradrag du har krav på.</div>
+    </div>
+    <a href="https://skatteberegner.no" target="_blank" class="krysspromo-btn">Skatteberegner.no →</a>
+  </div>
+</section>
+
 <section class="cta-section">
   <h2>Klar til å gjøre<br>skatten <em>ferdig</em>?</h2>
-  <p>Bli med tusenvis av nordmenn som gjør kryptoskatten enkelt.</p>
+  <p>Gjør kryptoskatten på 2 minutter.</p>
   <a href="app.html" class="btn-cta-white">Kom i gang – 199 kr →</a>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <div>© 2025 DinKryptoskatt · <a href="mailto:hei@dinkryptoskatt.no">hei@dinkryptoskatt.no</a></div>
+  <div>© 2025 DineKryptoskatt · <a href="mailto:hei@dinekryptoskatt.no">hei@dinekryptoskatt.no</a></div>
   <div style="display:flex;gap:24px">
     <a href="#">Personvern</a>
     <a href="#">Vilkår</a>
@@ -606,19 +328,10 @@ footer a:hover { color: white; }
 </footer>
 
 <script>
-// FAQ toggle
-function toggleFaq(btn) {
-  const item = btn.closest('.faq-item');
-  item.classList.toggle('open');
-}
-
-// Scroll reveal
+function toggleFaq(btn) { btn.closest('.faq-item').classList.toggle('open'); }
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      setTimeout(() => entry.target.classList.add('visible'), i * 80);
-      observer.unobserve(entry.target);
-    }
+    if (entry.isIntersecting) { setTimeout(() => entry.target.classList.add('visible'), i * 80); observer.unobserve(entry.target); }
   });
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));

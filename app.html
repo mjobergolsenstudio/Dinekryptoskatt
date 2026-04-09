@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DinKryptoskatt – App</title>
+<title>DineKryptoskatt – App</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <!-- Stripe -->
@@ -548,8 +548,8 @@ tbody td { padding: 12px 16px; font-size: 13px; }
 // ============================================================
 // CONFIG – bytt ut med dine egne Stripe-nøkler
 // ============================================================
-const STRIPE_PUBLISHABLE_KEY = 'pk_live_51TJsh49khQEU6lpJ2wmIiQWstTwrUuC0ussZQbywsE0u7gbYnCULq9fnaGNEtfeHLCOOxyQMsWtl1PoyKB2WVVAC00VARCGknH';
-const STRIPE_PRICE_ID = 'price_1TKHrV9khQEU6lpJux7kAaWD'; // Opprett i Stripe Dashboard
+const STRIPE_PUBLISHABLE_KEY = 'pk_test_DIN_STRIPE_NØKKEL_HER';
+const STRIPE_PRICE_ID = 'price_DIN_PRICE_ID_HER'; // Opprett i Stripe Dashboard
 
 // ============================================================
 // STATE
@@ -1150,7 +1150,7 @@ function downloadPDF() {
   // Footer
   doc.setFontSize(9);
   doc.setTextColor(150);
-  doc.text('DinKryptoskatt.no · hei@dinkryptoskatt.no · Generert ' + new Date().toLocaleString('nb-NO'), 20, 285);
+  doc.text('DineKryptoskatt.no · hei@dinekryptoskatt.no · Generert ' + new Date().toLocaleString('nb-NO'), 20, 285);
 
   doc.save('dinkryptoskatt-2025.pdf');
   showToast('✓ PDF lastet ned!', 'success');
