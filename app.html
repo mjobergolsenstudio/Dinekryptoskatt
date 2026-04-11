@@ -3,1173 +3,521 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DineKryptoskatt – App</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<!-- Stripe -->
-<script src="https://js.stripe.com/v3/"></script>
-<!-- Papa Parse for CSV -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<!-- jsPDF for PDF generation -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<title>DineKryptoskatt – Skatteberegner</title>
+<meta name="description" content="Beregn kryptoskatten din gratis. Last opp CSV fra Coinbase, Binance, Kraken, Firi eller Kucoin.">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #f7f5f1;
-  --white: #ffffff;
-  --ink: #0f0f0f;
-  --ink2: #2a2a2a;
-  --muted: #6b7280;
-  --border: #e5e0d8;
-  --accent: #1a6b3c;
-  --accent2: #2d9e5f;
-  --accent-light: #e8f5ee;
-  --red: #dc2626;
-  --red-light: #fef2f2;
-  --amber: #d97706;
-  --amber-light: #fffbeb;
-  --serif: 'Fraunces', Georgia, serif;
-  --sans: 'DM Sans', system-ui, sans-serif;
-  --mono: 'DM Mono', monospace;
-  --radius: 14px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;
+  --border:#30363d;--text:#e6edf3;--muted:#7d8590;
+  --green:#3fb950;--green-bg:#0d2f1a;
+  --blue:#58a6ff;--blue-bg:#0c2a4a;
+  --amber:#d29922;--amber-bg:#2d1f00;
+  --red:#f85149;--red-bg:#3d0f0f;
+  --accent:#58a6ff;
 }
-html, body { height: 100%; }
-body { font-family: var(--sans); background: var(--bg); color: var(--ink); }
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh}
 
-/* === LAYOUT === */
-.app { display: flex; height: 100vh; }
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100}
+.logo{font-family:'Fraunces',serif;font-size:1.2rem;color:var(--text)}
+.logo span{color:var(--green)}
+.badge-free{background:var(--green-bg);color:var(--green);font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--green);font-family:'DM Mono',monospace}
 
-/* SIDEBAR */
-.sidebar {
-  width: 220px; flex-shrink: 0;
-  background: var(--white); border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  padding: 24px 12px;
-}
-.logo { padding: 0 12px; margin-bottom: 32px; }
-.logo-text { font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--ink); }
-.logo-text span { color: var(--accent); }
-.logo-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+/* HERO */
+.hero{text-align:center;padding:3rem 1rem 2rem;max-width:700px;margin:0 auto}
+.hero h1{font-family:'Fraunces',serif;font-size:2.2rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+.hero h1 em{color:var(--green);font-style:italic}
+.hero p{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:0.5rem}
+.free-banner{background:var(--green-bg);border:1px solid var(--green);border-radius:8px;padding:0.75rem 1.5rem;display:inline-block;color:var(--green);font-size:13px;margin-top:1rem}
 
-.nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px; border-radius: 10px;
-  font-size: 14px; font-weight: 500; color: var(--muted);
-  cursor: pointer; transition: all 0.15s; margin-bottom: 2px;
-  border: none; background: none; width: 100%; text-align: left;
-}
-.nav-item:hover { background: var(--bg); color: var(--ink); }
-.nav-item.active { background: var(--accent-light); color: var(--accent); }
-.nav-icon { width: 18px; text-align: center; font-size: 15px; }
+/* MAIN LAYOUT */
+.app-wrap{max-width:900px;margin:0 auto;padding:1.5rem 1rem 4rem}
 
-.sidebar-bottom { margin-top: auto; padding: 12px; }
-.tax-pill {
-  background: #fff5f5; border: 1px solid #fecaca;
-  border-radius: 10px; padding: 14px;
-}
-.tax-pill-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-.tax-pill-amount { font-family: var(--mono); font-size: 20px; font-weight: 500; color: var(--red); }
-.tax-pill-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+/* STEP */
+.step{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:1.5rem;overflow:hidden}
+.step-header{padding:1rem 1.5rem;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--blue-bg);color:var(--blue);font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:500}
+.step-title{font-size:14px;font-weight:500}
+.step-body{padding:1.5rem}
 
-/* MAIN */
-.main { flex: 1; overflow-y: auto; padding: 32px; }
-.page { display: none; }
-.page.active { display: block; }
+/* EXCHANGE SELECT */
+.exchange-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:1rem}
+.ex-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.75rem;cursor:pointer;text-align:center;font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);transition:all .15s}
+.ex-btn:hover{border-color:var(--blue);color:var(--text)}
+.ex-btn.active{border-color:var(--green);color:var(--green);background:var(--green-bg)}
+.ex-icon{font-size:20px;display:block;margin-bottom:4px}
 
-/* PAGE HEADER */
-.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
-.page-title { font-family: var(--serif); font-size: 32px; font-weight: 300; }
-.page-sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
+/* UPLOAD */
+.upload-zone{border:2px dashed var(--border);border-radius:10px;padding:2.5rem;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--blue);background:var(--blue-bg)}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:2rem;margin-bottom:0.75rem;display:block}
+.upload-label{font-size:14px;color:var(--muted)}
+.upload-label strong{color:var(--text)}
 
-/* CARDS */
-.card {
-  background: var(--white); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 24px;
-  box-shadow: var(--shadow);
-}
-.card-title { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+/* GUIDE */
+.guide{background:var(--surface2);border-radius:8px;padding:1rem 1.25rem;margin-top:1rem;font-size:13px;color:var(--muted);line-height:1.8}
+.guide strong{color:var(--text)}
 
-/* STAT GRID */
-.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
-.stat-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
-.stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-.stat-value { font-family: var(--mono); font-size: 26px; font-weight: 500; }
-.stat-value.green { color: var(--accent); }
-.stat-value.red { color: var(--red); }
+/* UPLOADED FILES */
+.uploaded-list{margin-top:1rem;display:flex;flex-direction:column;gap:6px}
+.uploaded-item{background:var(--green-bg);border:1px solid var(--green);border-radius:6px;padding:0.6rem 1rem;font-size:13px;color:var(--green);display:flex;justify-content:space-between;align-items:center}
+.rm-btn{background:none;border:none;color:var(--green);cursor:pointer;font-size:16px;opacity:.6;font-family:monospace}
+.rm-btn:hover{opacity:1}
 
-/* === UPLOAD PAGE === */
-.upload-area {
-  border: 2px dashed var(--border); border-radius: var(--radius);
-  padding: 48px; text-align: center; cursor: pointer;
-  transition: all 0.2s; background: var(--white);
-}
-.upload-area:hover, .upload-area.drag-over {
-  border-color: var(--accent); background: var(--accent-light);
-}
-.upload-icon { font-size: 40px; margin-bottom: 16px; }
-.upload-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-.upload-sub { font-size: 14px; color: var(--muted); }
-.upload-input { display: none; }
-
-.exchange-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
-.exchange-tab {
-  display: flex; align-items: center; gap: 8px;
-  padding: 8px 16px; border-radius: 100px;
-  border: 1.5px solid var(--border); background: var(--white);
-  font-size: 13px; font-weight: 500; cursor: pointer;
-  transition: all 0.15s;
-}
-.exchange-tab:hover, .exchange-tab.active {
-  border-color: var(--accent); background: var(--accent-light); color: var(--accent);
-}
-.exchange-dot { width: 8px; height: 8px; border-radius: 50%; }
-.d-binance { background: #f3a117; }
-.d-coinbase { background: #0052ff; }
-.d-kraken { background: #5741d9; }
-.d-firi { background: #ff5b35; }
-.d-kucoin { background: #00a478; }
-
-.guide-box {
-  background: var(--amber-light); border: 1px solid #fde68a;
-  border-radius: 10px; padding: 16px; margin-bottom: 20px; font-size: 14px;
-}
-.guide-box strong { color: var(--amber); }
-.guide-steps { margin-top: 8px; padding-left: 16px; }
-.guide-steps li { margin-bottom: 4px; color: var(--ink2); }
+/* RESULTS */
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:1.5rem}
+.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.stat-value{font-size:1.5rem;font-weight:500;font-family:'Fraunces',serif}
+.stat-value.green{color:var(--green)}
+.stat-value.red{color:var(--red)}
+.stat-value.blue{color:var(--blue)}
+.stat-value.amber{color:var(--amber)}
 
 /* TABLE */
-.table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
-table { width: 100%; border-collapse: collapse; }
-thead th {
-  font-size: 11px; color: var(--muted); font-weight: 500;
-  text-align: left; padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-  text-transform: uppercase; letter-spacing: 0.5px;
-  background: var(--bg); white-space: nowrap;
-}
-tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: var(--bg); }
-tbody td { padding: 12px 16px; font-size: 13px; }
-.mono { font-family: var(--mono); font-size: 12px; }
-.positive { color: var(--accent); }
-.negative { color: var(--red); }
-.badge {
-  display: inline-block; padding: 2px 8px; border-radius: 4px;
-  font-size: 11px; font-weight: 500; text-transform: uppercase; font-family: var(--mono);
-}
-.badge-buy { background: var(--accent-light); color: var(--accent); }
-.badge-sell { background: var(--red-light); color: var(--red); }
-.badge-stake { background: var(--amber-light); color: var(--amber); }
+.table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--surface2);padding:0.75rem 1rem;text-align:left;color:var(--muted);font-weight:500;border-bottom:1px solid var(--border)}
+td{padding:0.65rem 1rem;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+.type-income{color:var(--green)}
+.type-receive{color:var(--blue)}
+.type-transfer{color:var(--amber)}
+.type-buy{color:var(--blue)}
+.type-sell{color:var(--red)}
 
-/* BUTTONS */
-.btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 10px 20px; border-radius: 100px;
-  font-size: 14px; font-weight: 500; font-family: var(--sans);
-  cursor: pointer; border: none; transition: all 0.15s; text-decoration: none;
-}
-.btn-primary { background: var(--ink); color: white; }
-.btn-primary:hover { background: var(--accent); }
-.btn-outline { background: transparent; color: var(--ink); border: 1.5px solid var(--border); }
-.btn-outline:hover { border-color: var(--ink); }
-.btn-accent { background: var(--accent); color: white; }
-.btn-accent:hover { background: #155e34; }
-.btn-lg { padding: 14px 28px; font-size: 16px; }
+/* SKATT SECTION */
+.skatt-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1rem}
+.skatt-row{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid var(--border);font-size:14px}
+.skatt-row:last-child{border-bottom:none}
+.skatt-row.total{font-weight:500;font-size:15px;color:var(--text)}
+.skatt-note{font-size:12px;color:var(--muted);margin-top:1rem;line-height:1.7;padding:1rem;background:var(--amber-bg);border:1px solid var(--amber);border-radius:8px}
 
-/* === PAYMENT GATE === */
-.payment-gate {
-  position: fixed; inset: 0; background: rgba(15,15,15,0.7);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1000; backdrop-filter: blur(4px);
-  opacity: 0; pointer-events: none; transition: opacity 0.2s;
-}
-.payment-gate.open { opacity: 1; pointer-events: all; }
-.payment-modal {
-  background: var(--white); border-radius: 20px;
-  padding: 40px; width: 420px; max-width: 95vw;
-  transform: translateY(16px); transition: transform 0.2s;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.2);
-}
-.payment-gate.open .payment-modal { transform: translateY(0); }
-.payment-modal h2 { font-family: var(--serif); font-size: 28px; font-weight: 300; margin-bottom: 8px; }
-.payment-modal p { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
-.payment-features { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px; }
-.payment-features li { display: flex; align-items: center; gap: 10px; font-size: 14px; }
-.payment-features li::before { content: '✓'; color: var(--accent); font-weight: 700; }
-.price-display {
-  background: var(--bg); border-radius: 12px; padding: 16px;
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 16px;
-}
-.price-display-label { font-size: 14px; color: var(--muted); }
-.price-display-amount { font-family: var(--mono); font-size: 24px; font-weight: 500; }
-.btn-pay {
-  width: 100%; padding: 16px; border-radius: 100px;
-  background: var(--ink); color: white; font-size: 16px;
-  font-weight: 600; border: none; cursor: pointer;
-  font-family: var(--sans); transition: all 0.15s;
-}
-.btn-pay:hover { background: var(--accent); }
-.pay-note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 10px; }
-.btn-close-modal {
-  background: none; border: none; font-size: 20px; cursor: pointer;
-  color: var(--muted); position: absolute; top: 16px; right: 16px;
-}
+/* PDF BTN */
+.btn-pdf{width:100%;padding:1rem;background:var(--green);color:#000;border:none;border-radius:8px;font-family:'DM Mono',monospace;font-size:14px;font-weight:500;cursor:pointer;margin-top:1rem;transition:opacity .15s}
+.btn-pdf:hover{opacity:.85}
+.btn-analyze{display:inline-flex;align-items:center;gap:8px;padding:0.75rem 1.5rem;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue);border-radius:8px;font-family:'DM Mono',monospace;font-size:13px;cursor:pointer;transition:all .15s}
+.btn-analyze:hover{background:var(--blue);color:#000}
 
-/* === REPORT PAGE === */
-.report-locked {
-  text-align: center; padding: 60px 24px;
-  border: 2px dashed var(--border); border-radius: var(--radius);
-}
-.report-locked h3 { font-family: var(--serif); font-size: 28px; font-weight: 300; margin-bottom: 12px; }
-.report-locked p { color: var(--muted); margin-bottom: 24px; }
-
-.tax-breakdown { display: flex; flex-direction: column; gap: 0; }
-.tax-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-.tax-row:last-child { border-bottom: none; font-weight: 600; font-size: 16px; }
-.tax-label-text { color: var(--muted); }
-.tax-amount-val { font-family: var(--mono); }
+/* EMPTY */
+.empty{text-align:center;padding:3rem 1rem;color:var(--muted);font-size:14px}
+.empty-icon{font-size:2.5rem;display:block;margin-bottom:1rem;opacity:.4}
 
 /* TOAST */
-.toast {
-  position: fixed; bottom: 24px; right: 24px;
-  padding: 14px 20px; border-radius: 12px;
-  font-size: 14px; font-weight: 500; z-index: 2000;
-  transform: translateY(60px); opacity: 0; transition: all 0.3s;
-  max-width: 320px;
-}
-.toast.show { transform: translateY(0); opacity: 1; }
-.toast.success { background: var(--accent-light); border: 1px solid var(--accent); color: var(--accent); }
-.toast.error { background: var(--red-light); border: 1px solid var(--red); color: var(--red); }
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1.25rem;font-size:13px;z-index:999;opacity:0;transform:translateY(10px);transition:all .3s;max-width:320px}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.ok{border-color:var(--green);color:var(--green)}
+.toast.err{border-color:var(--red);color:var(--red)}
 
-/* EMPTY STATE */
-.empty-state { text-align: center; padding: 60px 24px; color: var(--muted); }
-.empty-state-icon { font-size: 40px; margin-bottom: 16px; }
-.empty-state h3 { font-size: 18px; color: var(--ink); margin-bottom: 8px; }
+/* FILTER */
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+.filter-btn{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:12px;color:var(--muted);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s}
+.filter-btn.active{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
 
-/* GUIDE CARD */
-.guide-card {
-  background: var(--accent-light); border: 1px solid rgba(26,107,60,0.2);
-  border-radius: var(--radius); padding: 20px; margin-bottom: 20px;
-}
-.guide-card-title { font-weight: 600; color: var(--accent); margin-bottom: 8px; }
-
-/* PROGRESS STEPS */
-.progress-steps { display: flex; align-items: center; gap: 0; margin-bottom: 32px; }
-.progress-step { display: flex; align-items: center; flex: 1; }
-.progress-step:last-child { flex: 0; }
-.step-circle {
-  width: 32px; height: 32px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 600; flex-shrink: 0;
-  border: 2px solid var(--border); color: var(--muted); background: var(--white);
-}
-.step-circle.done { background: var(--accent); border-color: var(--accent); color: white; }
-.step-circle.active { border-color: var(--accent); color: var(--accent); }
-.step-line { flex: 1; height: 2px; background: var(--border); margin: 0 4px; }
-.step-line.done { background: var(--accent); }
-
-/* CHART */
-.mini-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; margin-top: 16px; }
-.mini-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.mini-bar { width: 100%; background: var(--accent); border-radius: 3px 3px 0 0; opacity: 0.7; min-height: 4px; }
-.mini-bar-label { font-size: 9px; color: var(--muted); font-family: var(--mono); }
-
-@media (max-width: 768px) {
-  .app { flex-direction: column; }
-  .sidebar { width: 100%; height: auto; flex-direction: row; padding: 12px; overflow-x: auto; }
-  .sidebar-bottom { display: none; }
-  .stat-grid { grid-template-columns: 1fr 1fr; }
-  .main { padding: 16px; }
-}
+/* USD/NOK TOGGLE */
+.currency-toggle{display:flex;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px;margin-left:auto}
+.cur-btn{padding:3px 10px;border-radius:4px;border:none;background:none;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;transition:all .15s}
+.cur-btn.active{background:var(--surface);color:var(--text)}
 </style>
 </head>
 <body>
 
-<div class="app">
-  <!-- SIDEBAR -->
-  <nav class="sidebar">
-    <div class="logo">
-      <div class="logo-text">Din<span>Kryptoskatt</span></div>
-      <div class="logo-sub">Skatteår 2025</div>
+<nav>
+  <span class="logo">DineKrypto<span>Skatt</span></span>
+  <span class="badge-free">🎉 Gratis oppstartstilbud</span>
+</nav>
+
+<div class="hero">
+  <h1>Kryptoskatten din<br><em>på 2 minutter</em></h1>
+  <p>Last opp CSV fra børsen din — vi beregner gevinst, tap og skattepliktig inntekt automatisk.</p>
+  <div class="free-banner">✓ Helt gratis akkurat nå · Ingen konto nødvendig · Ingen data lagres</div>
+</div>
+
+<div class="app-wrap">
+
+  <!-- STEP 1: VELG BØRS -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <span class="step-title">Velg børs</span>
     </div>
-    <button class="nav-item active" onclick="showPage('upload')">
-      <span class="nav-icon">⬆️</span> Last opp CSV
-    </button>
-    <button class="nav-item" onclick="showPage('dashboard')">
-      <span class="nav-icon">📊</span> Oversikt
-    </button>
-    <button class="nav-item" onclick="showPage('transactions')">
-      <span class="nav-icon">📋</span> Transaksjoner
-    </button>
-    <button class="nav-item" onclick="showPage('report')">
-      <span class="nav-icon">📄</span> Skatterapport
-    </button>
-    <div class="sidebar-bottom">
-      <div class="tax-pill">
-        <div class="tax-pill-label">Estimert skatt 2025</div>
-        <div class="tax-pill-amount" id="sidebarTax">kr 0</div>
-        <div class="tax-pill-sub">22% av gevinst</div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- === UPLOAD PAGE === -->
-    <div class="page active" id="page-upload">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Last opp CSV</div>
-          <div class="page-sub">Velg din børs og last opp transaksjonshistorikk</div>
-        </div>
-      </div>
-
-      <!-- Exchange selector -->
-      <div class="exchange-tabs">
-        <div class="exchange-tab active" onclick="selectExchange('binance', this)">
-          <div class="exchange-dot d-binance"></div> Binance
-        </div>
-        <div class="exchange-tab" onclick="selectExchange('coinbase', this)">
-          <div class="exchange-dot d-coinbase"></div> Coinbase
-        </div>
-        <div class="exchange-tab" onclick="selectExchange('kraken', this)">
-          <div class="exchange-dot d-kraken"></div> Kraken
-        </div>
-        <div class="exchange-tab" onclick="selectExchange('firi', this)">
-          <div class="exchange-dot d-firi"></div> Firi
-        </div>
-        <div class="exchange-tab" onclick="selectExchange('kucoin', this)">
-          <div class="exchange-dot d-kucoin"></div> Kucoin
-        </div>
-      </div>
-
-      <!-- Guide box -->
-      <div class="guide-card">
-        <div class="guide-card-title" id="guideTitle">📖 Slik laster du ned fra Binance</div>
-        <div id="guideText" style="font-size:14px;color:var(--ink2);line-height:1.7"></div>
-      </div>
-
-      <!-- Upload area -->
-      <div class="upload-area" id="uploadArea" onclick="document.getElementById('csvInput').click()"
-           ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="handleDragLeave(event)">
-        <div class="upload-icon">📂</div>
-        <div class="upload-title">Dra og slipp CSV-fil her</div>
-        <div class="upload-sub">eller klikk for å velge fil</div>
-      </div>
-      <input type="file" id="csvInput" class="upload-input" accept=".csv" onchange="handleFile(event)">
-
-      <!-- Uploaded files list -->
-      <div id="uploadedFiles" style="margin-top:16px;display:flex;flex-direction:column;gap:8px"></div>
-
-      <div style="margin-top:24px;display:flex;gap:12px;align-items:center">
-        <button class="btn btn-accent btn-lg" onclick="processAndContinue()" id="processBtn" style="display:none">
-          Beregn skatt →
+    <div class="step-body">
+      <div class="exchange-grid">
+        <button class="ex-btn" data-ex="coinbase" onclick="selectEx(this)">
+          <span class="ex-icon">🔵</span>Coinbase
         </button>
-        <div id="processStatus" style="font-size:14px;color:var(--muted)"></div>
+        <button class="ex-btn" data-ex="binance" onclick="selectEx(this)">
+          <span class="ex-icon">🟡</span>Binance
+        </button>
+        <button class="ex-btn" data-ex="kraken" onclick="selectEx(this)">
+          <span class="ex-icon">🐙</span>Kraken
+        </button>
+        <button class="ex-btn" data-ex="firi" onclick="selectEx(this)">
+          <span class="ex-icon">🇳🇴</span>Firi
+        </button>
+        <button class="ex-btn" data-ex="kucoin" onclick="selectEx(this)">
+          <span class="ex-icon">🟢</span>KuCoin
+        </button>
       </div>
+      <div class="guide" id="guide">Velg en børs for å se hvordan du eksporterer CSV-filen.</div>
     </div>
-
-    <!-- === DASHBOARD PAGE === -->
-    <div class="page" id="page-dashboard">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Oversikt</div>
-          <div class="page-sub">Skatteår 2025</div>
-        </div>
-        <button class="btn btn-outline" onclick="showPage('upload')">+ Last opp mer</button>
-      </div>
-
-      <div class="stat-grid" id="statGrid">
-        <div class="stat-card">
-          <div class="stat-label">Totale transaksjoner</div>
-          <div class="stat-value" id="statTx">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Gevinst 2025</div>
-          <div class="stat-value green" id="statGain">kr 0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Skyldig skatt (22%)</div>
-          <div class="stat-value red" id="statTax">kr 0</div>
-        </div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-        <div class="card">
-          <div class="card-title">Gevinst per måned</div>
-          <div class="mini-chart" id="dashChart"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">Beholdning per mynt</div>
-          <div id="holdingsList" style="margin-top:8px"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- === TRANSACTIONS PAGE === -->
-    <div class="page" id="page-transactions">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Transaksjoner</div>
-          <div class="page-sub" id="txCount">0 transaksjoner lastet inn</div>
-        </div>
-        <button class="btn btn-outline" onclick="showPage('upload')">+ Last opp mer</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Mynt</th>
-              <th>Type</th>
-              <th>Antall</th>
-              <th>Pris (NOK)</th>
-              <th>Verdi (NOK)</th>
-              <th>Gevinst/tap</th>
-              <th>Dato</th>
-            </tr>
-          </thead>
-          <tbody id="txBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- === REPORT PAGE === -->
-    <div class="page" id="page-report">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Skatterapport</div>
-          <div class="page-sub">Skatteår 2025 · FIFO-metoden</div>
-        </div>
-      </div>
-
-      <!-- Locked state -->
-      <div id="reportLocked" class="report-locked" style="display:none">
-        <div style="font-size:48px;margin-bottom:16px">🔒</div>
-        <h3>Lås opp skatterapporten</h3>
-        <p>Last opp CSV-fil fra din børs for å se og laste ned rapporten din</p>
-        <button class="btn btn-accent btn-lg" onclick="showPage('upload')">Last opp CSV →</button>
-      </div>
-
-      <!-- Paywall state -->
-      <div id="reportPaywall" style="display:none">
-        <div class="stat-grid" style="margin-bottom:24px">
-          <div class="stat-card">
-            <div class="stat-label">Total gevinst</div>
-            <div class="stat-value green" id="reportGain">kr 0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Total tap</div>
-            <div class="stat-value" id="reportLoss">kr 0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Skyldig skatt</div>
-            <div class="stat-value red" id="reportTax">kr 0</div>
-          </div>
-        </div>
-        <div class="card" style="text-align:center;padding:48px">
-          <div style="font-size:40px;margin-bottom:16px">📄</div>
-          <h3 style="font-family:var(--serif);font-size:24px;font-weight:300;margin-bottom:12px">Klar til å laste ned rapporten</h3>
-          <p style="color:var(--muted);margin-bottom:24px;font-size:15px">Betal 199 kr for å laste ned din ferdig utfylte skatterapport PDF – klar til å bruke i skattemeldingen.</p>
-          <button class="btn btn-accent btn-lg" onclick="openPayment()">Lås opp – 199 kr →</button>
-          <div style="font-size:12px;color:var(--muted);margin-top:12px">Sikker betaling via Stripe · 14 dagers pengene-tilbake-garanti</div>
-        </div>
-      </div>
-
-      <!-- Paid state -->
-      <div id="reportPaid" style="display:none">
-        <div style="display:flex;gap:12px;margin-bottom:24px">
-          <button class="btn btn-accent" onclick="downloadPDF()">📄 Last ned PDF-rapport</button>
-          <button class="btn btn-outline" onclick="showPage('upload')">+ Last opp mer</button>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-          <div class="card">
-            <div class="card-title">Skatteberegning (FIFO)</div>
-            <div class="tax-breakdown" id="taxBreakdown"></div>
-          </div>
-          <div class="card">
-            <div class="card-title">Om FIFO-metoden</div>
-            <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:16px">
-              Skatteetaten krever FIFO (First In, First Out). De første myntene du kjøpte regnes som de første du solgte.
-            </p>
-            <div style="background:var(--bg);border-radius:8px;padding:14px;font-family:var(--mono);font-size:12px;line-height:1.8">
-              Kjøpte 1 BTC @ 300 000 kr<br>
-              Solgte 1 BTC @ 500 000 kr<br>
-              <span style="color:var(--accent)">→ Gevinst: 200 000 kr</span><br>
-              <span style="color:var(--red)">→ Skatt (22%): 44 000 kr</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="reportEmpty" style="display:block">
-        <div class="empty-state">
-          <div class="empty-state-icon">📊</div>
-          <h3>Ingen data ennå</h3>
-          <p>Last opp CSV fra din børs for å se skatterapporten din</p>
-          <button class="btn btn-accent" style="margin-top:16px" onclick="showPage('upload')">Last opp CSV →</button>
-        </div>
-      </div>
-    </div>
-
-  </main>
-</div>
-
-<!-- PAYMENT MODAL -->
-<div class="payment-gate" id="paymentGate">
-  <div class="payment-modal" style="position:relative">
-    <button class="btn-close-modal" onclick="closePayment()">×</button>
-    <h2>Lås opp rapporten</h2>
-    <p>Én betaling for hele skatteåret 2025</p>
-    <ul class="payment-features">
-      <li>Ferdig PDF-skatterapport for Skatteetaten</li>
-      <li>Ubegrenset antall transaksjoner</li>
-      <li>FIFO-beregning etter norsk lov</li>
-      <li>Last ned og bruk med en gang</li>
-    </ul>
-    <div class="price-display">
-      <span class="price-display-label">DinKryptoskatt 2025</span>
-      <span class="price-display-amount">199 kr</span>
-    </div>
-    <button class="btn-pay" onclick="initiateStripePayment()">
-      Betal 199 kr →
-    </button>
-    <div class="pay-note">🔒 Sikker betaling via Stripe · 14 dagers garanti</div>
   </div>
+
+  <!-- STEP 2: LAST OPP -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <span class="step-title">Last opp CSV</span>
+    </div>
+    <div class="step-body">
+      <div class="upload-zone" id="dropZone">
+        <input type="file" accept=".csv" id="csvInput" onchange="handleFile(this.files[0])">
+        <span class="upload-icon">📂</span>
+        <div class="upload-label"><strong>Klikk for å velge fil</strong> eller dra og slipp her</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px">Kun CSV-filer · Filen forlater ikke nettleseren din</div>
+      </div>
+      <div class="uploaded-list" id="uploadedList"></div>
+    </div>
+  </div>
+
+  <!-- STEP 3: RESULTATER -->
+  <div class="step" id="resultsStep" style="display:none">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <span class="step-title">Resultater</span>
+      <div class="currency-toggle" style="margin-left:auto">
+        <button class="cur-btn active" id="btnNOK" onclick="setCurrency('NOK')">NOK</button>
+        <button class="cur-btn" id="btnUSD" onclick="setCurrency('USD')">USD</button>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="results-grid" id="statsGrid"></div>
+
+      <div class="skatt-box" id="skattBox"></div>
+
+      <div class="skatt-note">
+        ⚠️ Dette er et estimat basert på dine transaksjoner. USD/NOK-kursen er estimert til 10.5.
+        Staking-inntekt regnes som skattepliktig inntekt (alminnelig inntekt) i Norge.
+        Konsulter en regnskapsfører for endelig skattemelding.
+      </div>
+
+      <div style="margin-top:1.5rem">
+        <div class="filter-row" id="filterRow">
+          <span style="font-size:13px;color:var(--muted);padding:4px 0">Filtrer:</span>
+          <button class="filter-btn active" onclick="setFilter('all',this)">Alle</button>
+          <button class="filter-btn" onclick="setFilter('Staking Income',this)">Staking</button>
+          <button class="filter-btn" onclick="setFilter('Receive',this)">Mottatt</button>
+          <button class="filter-btn" onclick="setFilter('Buy',this)">Kjøp</button>
+          <button class="filter-btn" onclick="setFilter('Sell',this)">Salg</button>
+          <button class="filter-btn" onclick="setFilter('Transfer',this)">Overføring</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Dato</th>
+                <th>Type</th>
+                <th>Mynt</th>
+                <th>Mengde</th>
+                <th>Verdi</th>
+              </tr>
+            </thead>
+            <tbody id="txTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <button class="btn-pdf" onclick="exportPDF()">⬇ Last ned skatterapport (PDF)</button>
+    </div>
+  </div>
+
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
-// ============================================================
-// CONFIG – bytt ut med dine egne Stripe-nøkler
-// ============================================================
-const STRIPE_PUBLISHABLE_KEY = 'pk_test_DIN_STRIPE_NØKKEL_HER';
-const STRIPE_PRICE_ID = 'price_DIN_PRICE_ID_HER'; // Opprett i Stripe Dashboard
+const USD_NOK = 10.5;
+let state = { exchange: null, transactions: [], currency: 'NOK', filter: 'all' };
 
-// ============================================================
-// STATE
-// ============================================================
-let state = {
-  transactions: [],
-  uploadedFiles: [],
-  selectedExchange: 'binance',
-  hasPaid: false,
-  taxData: { gain: 0, loss: 0, tax: 0, byMonth: {}, byCoin: {} }
-};
-
-// Check if already paid (localStorage for demo – bruk Supabase i prod)
-if (localStorage.getItem('dks_paid_2025') === 'true') {
-  state.hasPaid = true;
-}
-
-// ============================================================
-// EXCHANGE GUIDES
-// ============================================================
 const guides = {
-  binance: {
-    title: '📖 Slik laster du ned fra Binance',
-    steps: [
-      'Logg inn på Binance.com',
-      'Klikk på profilikonet → <strong>Ordre → Transaksjonshistorikk</strong>',
-      'Øverst til høyre: klikk <strong>"Eksporter transaksjonshistorikk"</strong>',
-      'Velg skatteår 2025, velg alle mynt',
-      'Klikk <strong>"Generer"</strong> og last ned CSV-filen'
-    ]
-  },
-  coinbase: {
-    title: '📖 Slik laster du ned fra Coinbase',
-    steps: [
-      'Logg inn på Coinbase.com',
-      'Gå til <strong>Profil → Rapporter</strong>',
-      'Klikk <strong>"Generer rapport"</strong> → Transaksjoner',
-      'Velg tidsperiode: hele 2025',
-      'Klikk <strong>"Generer rapport"</strong> og last ned CSV'
-    ]
-  },
-  kraken: {
-    title: '📖 Slik laster du ned fra Kraken',
-    steps: [
-      'Logg inn på Kraken.com',
-      'Gå til <strong>Historikk → Eksporter</strong>',
-      'Velg <strong>"Handler"</strong> som eksporttype',
-      'Sett dato: 01.01.2025 til 31.12.2025',
-      'Klikk <strong>"Send"</strong> – filen sendes til e-posten din'
-    ]
-  },
-  firi: {
-    title: '📖 Slik laster du ned fra Firi',
-    steps: [
-      'Logg inn på Firi.com',
-      'Gå til <strong>Konto → Last ned transaksjoner</strong>',
-      'Velg år: <strong>2025</strong>',
-      'Velg format: <strong>CSV</strong>',
-      'Klikk <strong>"Last ned"</strong>'
-    ]
-  },
-  kucoin: {
-    title: '📖 Slik laster du ned fra Kucoin',
-    steps: [
-      'Logg inn på Kucoin.com',
-      'Gå til <strong>Ordre → Ordrehistorikk</strong>',
-      'Klikk på <strong>eksporter-ikonet</strong> øverst til høyre',
-      'Velg tidsperiode for 2025',
-      'Last ned <strong>CSV-filen</strong>'
-    ]
-  }
+  coinbase: '<strong>Coinbase:</strong> Logg inn → Assets → (velg mynt) → Transactions → Download report · Eller: Profile → Statements → Generate → Transaction history',
+  binance: '<strong>Binance:</strong> Logg inn → Wallet → Transaction History → Generate All Statements → Last ned CSV',
+  kraken: '<strong>Kraken:</strong> Logg inn → History → Export → Trade history / Ledger → Last ned',
+  firi: '<strong>Firi:</strong> Logg inn → Konto → Last ned transaksjonshistorikk → CSV',
+  kucoin: '<strong>KuCoin:</strong> Logg inn → Assets → Spot Account → Trade History → Export'
 };
 
-function selectExchange(exchange, el) {
-  state.selectedExchange = exchange;
-  document.querySelectorAll('.exchange-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  renderGuide();
+function selectEx(btn) {
+  document.querySelectorAll('.ex-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state.exchange = btn.dataset.ex;
+  document.getElementById('guide').innerHTML = guides[state.exchange] || '';
 }
 
-function renderGuide() {
-  const g = guides[state.selectedExchange];
-  document.getElementById('guideTitle').textContent = g.title;
-  document.getElementById('guideText').innerHTML =
-    '<ol style="padding-left:18px">' +
-    g.steps.map(s => `<li style="margin-bottom:6px">${s}</li>`).join('') +
-    '</ol>';
-}
-renderGuide();
-
-// ============================================================
-// FILE HANDLING
-// ============================================================
-function handleDragOver(e) {
-  e.preventDefault();
-  document.getElementById('uploadArea').classList.add('drag-over');
-}
-function handleDragLeave(e) {
-  document.getElementById('uploadArea').classList.remove('drag-over');
-}
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('uploadArea').classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file) parseCSV(file);
-}
-function handleFile(e) {
-  const file = e.target.files[0];
-  if (file) parseCSV(file);
+function showToast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3000);
 }
 
-function parseCSV(file) {
-  showToast(`Leser ${file.name}...`, 'success');
+function handleFile(file) {
+  if (!file) return;
+  if (!state.exchange) { showToast('Velg en børs først', 'err'); return; }
+
   Papa.parse(file, {
-    header: true,
     skipEmptyLines: true,
-    complete: (results) => {
-      const parsed = normalizeCSV(results.data, state.selectedExchange, file.name);
-      if (parsed.length === 0) {
-        showToast('Klarte ikke lese filen. Riktig børs valgt?', 'error');
+    complete: (res) => {
+      const parsed = parseCSV(res.data, state.exchange);
+      if (!parsed || parsed.length === 0) {
+        showToast('Klarte ikke lese filen. Riktig børs valgt?', 'err');
         return;
       }
       state.transactions = [...state.transactions, ...parsed];
-      state.uploadedFiles.push({ name: file.name, exchange: state.selectedExchange, count: parsed.length });
-      renderUploadedFiles();
-      calculateTax();
-      document.getElementById('processBtn').style.display = 'flex';
-      document.getElementById('processStatus').textContent =
-        `${state.transactions.length} transaksjoner totalt`;
-      showToast(`✓ ${parsed.length} transaksjoner lest fra ${file.name}`, 'success');
+      renderUploaded(file.name, parsed.length);
+      renderResults();
+      showToast(`✓ ${parsed.length} transaksjoner lastet inn`, 'ok');
     },
-    error: () => showToast('Feil ved lesing av fil', 'error')
+    error: () => showToast('Feil ved lesing av fil', 'err')
   });
 }
 
-// ============================================================
-// CSV NORMALIZATION – tilpasser format fra hver børs
-// ============================================================
-function normalizeCSV(rows, exchange, filename) {
-  try {
-    if (exchange === 'binance') return normalizeBinance(rows);
-    if (exchange === 'coinbase') return normalizeCoinbase(rows);
-    if (exchange === 'kraken') return normalizeKraken(rows);
-    if (exchange === 'firi') return normalizeFiri(rows);
-    if (exchange === 'kucoin') return normalizeKucoin(rows);
-  } catch(e) {
-    console.error('Parse error:', e);
-  }
+// ─── CSV PARSER ────────────────────────────────────────────
+function parseCSV(rows, exchange) {
+  if (exchange === 'coinbase') return parseCoinbase(rows);
+  if (exchange === 'binance') return parseBinance(rows);
+  if (exchange === 'kraken') return parseKraken(rows);
+  if (exchange === 'firi') return parseFiri(rows);
+  if (exchange === 'kucoin') return parseKucoin(rows);
   return [];
 }
 
-function normalizeBinance(rows) {
-  // Binance format: Date(UTC), Pair, Side, Price, Executed, Amount, Fee
-  return rows.filter(r => r['Side'] || r['side']).map(r => {
-    const side = (r['Side'] || r['side'] || '').toLowerCase();
+function parseCoinbase(rows) {
+  // Find header row (contains "Timestamp" or "ID")
+  let headerIdx = -1;
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    if (row.some(c => c === 'Timestamp' || c === 'ID')) { headerIdx = i; break; }
+  }
+  if (headerIdx === -1) return [];
+
+  const headers = rows[headerIdx].map(h => h.trim());
+  const data = rows.slice(headerIdx + 1);
+
+  return data.map(row => {
+    const r = {};
+    headers.forEach((h, i) => r[h] = (row[i] || '').trim());
+
+    const type = r['Transaction Type'] || '';
+    const asset = r['Asset'] || '';
+    const qty = parseFloat(r['Quantity Transacted'] || 0);
+    const total = parseFloat((r['Total (inclusive of fees and/or spread)'] || r['Subtotal'] || '0').replace(/[$,]/g, ''));
+    const date = (r['Timestamp'] || '').slice(0, 10);
+
+    if (!asset || !date || isNaN(qty)) return null;
+
+    // Normalize type
+    let normType = type;
+    if (type === 'Staking Income') normType = 'Staking Income';
+    else if (type === 'Buy') normType = 'Buy';
+    else if (type === 'Sell') normType = 'Sell';
+    else if (type === 'Receive') normType = 'Receive';
+    else if (type === 'Send') normType = 'Send';
+    else if (type.includes('Transfer')) normType = 'Transfer';
+    else normType = type;
+
+    return { date, type: normType, asset, qty: Math.abs(qty), valueUSD: Math.abs(total), exchange: 'Coinbase' };
+  }).filter(Boolean);
+}
+
+function parseBinance(rows) {
+  // Find header
+  let headerIdx = rows.findIndex(r => r.some(c => c === 'Date(UTC)' || c === 'Date' || c === 'Time'));
+  if (headerIdx === -1) headerIdx = 0;
+  const headers = rows[headerIdx].map(h => h.trim());
+  const data = rows.slice(headerIdx + 1);
+
+  return data.map(row => {
+    const r = {};
+    headers.forEach((h, i) => r[h] = (row[i] || '').trim());
+    const date = (r['Date(UTC)'] || r['Date'] || '').slice(0, 10);
+    const side = (r['Side'] || r['Operation'] || '').toLowerCase();
     const pair = r['Pair'] || r['Symbol'] || '';
-    const coin = pair.replace(/USDT|BTC|ETH|BNB|BUSD/, '').split('/')[0] || pair.slice(0,3);
-    const price = parseFloat(r['Price'] || r['price'] || 0);
-    const amount = parseFloat(r['Executed'] || r['Qty'] || r['amount'] || 0);
-    const date = r['Date(UTC)'] || r['Date'] || r['date'] || '';
-    return {
-      coin: coin.toUpperCase(),
-      type: side === 'buy' ? 'buy' : 'sell',
-      amount: Math.abs(amount),
-      priceUSD: price,
-      priceNOK: price * 10.5, // Approximate – in prod fetch real rate
-      date: date.slice(0,10),
-      exchange: 'Binance',
-      fee: parseFloat(r['Fee'] || 0)
-    };
-  }).filter(r => r.coin && r.amount > 0);
+    const asset = pair.replace(/(USDT|BUSD|BTC|ETH|BNB)$/, '') || pair.slice(0, 3);
+    const qty = parseFloat(r['Executed'] || r['Qty'] || 0);
+    const price = parseFloat(r['Price'] || 0);
+    const type = side === 'buy' ? 'Buy' : side === 'sell' ? 'Sell' : side;
+    if (!date || !asset) return null;
+    return { date, type, asset: asset.toUpperCase(), qty: Math.abs(qty), valueUSD: qty * price, exchange: 'Binance' };
+  }).filter(Boolean);
 }
 
-function normalizeCoinbase(rows) {
-  // Coinbase format: Timestamp, Transaction Type, Asset, Quantity Transacted, Price Currency, Price at Transaction, Total
-  return rows.filter(r => {
-    const t = (r['Transaction Type'] || r['type'] || '').toLowerCase();
-    return t === 'buy' || t === 'sell' || t === 'receive' || t === 'send';
-  }).map(r => {
-    const type = (r['Transaction Type'] || r['type'] || '').toLowerCase();
-    const mappedType = type === 'buy' || type === 'receive' ? 'buy' : 'sell';
-    const priceNOK = parseFloat(r['Price at Transaction'] || r['price'] || 0) * 10.5;
-    return {
-      coin: (r['Asset'] || r['asset'] || '').toUpperCase(),
-      type: mappedType,
-      amount: Math.abs(parseFloat(r['Quantity Transacted'] || r['amount'] || 0)),
-      priceNOK: priceNOK,
-      priceUSD: parseFloat(r['Price at Transaction'] || 0),
-      date: (r['Timestamp'] || r['date'] || '').slice(0,10),
-      exchange: 'Coinbase',
-      fee: 0
-    };
-  }).filter(r => r.coin && r.amount > 0);
+function parseKraken(rows) {
+  let headerIdx = rows.findIndex(r => r.includes('txid') || r.includes('type'));
+  if (headerIdx === -1) headerIdx = 0;
+  const headers = rows[headerIdx].map(h => h.trim());
+  const data = rows.slice(headerIdx + 1);
+  return data.map(row => {
+    const r = {};
+    headers.forEach((h, i) => r[h] = (row[i] || '').trim());
+    const date = (r['time'] || '').slice(0, 10);
+    const type = r['type'] || '';
+    const asset = (r['asset'] || '').replace(/^X|Z$/, '');
+    const qty = parseFloat(r['amount'] || 0);
+    if (!date || !asset) return null;
+    return { date, type: type.charAt(0).toUpperCase() + type.slice(1), asset, qty: Math.abs(qty), valueUSD: 0, exchange: 'Kraken' };
+  }).filter(Boolean);
 }
 
-function normalizeKraken(rows) {
-  // Kraken format: txid, refid, time, type, subtype, aclass, asset, amount, fee, balance
-  return rows.filter(r => {
-    const t = (r['type'] || '').toLowerCase();
-    return t === 'trade' || t === 'buy' || t === 'sell';
-  }).map(r => {
-    const amount = parseFloat(r['amount'] || 0);
-    const asset = (r['asset'] || '').replace(/^X|^Z/, '').replace('XBT','BTC');
-    return {
-      coin: asset.slice(0,4).toUpperCase(),
-      type: amount > 0 ? 'buy' : 'sell',
-      amount: Math.abs(amount),
-      priceNOK: 0, // Kraken needs price lookup
-      priceUSD: 0,
-      date: (r['time'] || '').slice(0,10),
-      exchange: 'Kraken',
-      fee: parseFloat(r['fee'] || 0)
-    };
-  }).filter(r => r.coin && r.amount > 0);
+function parseFiri(rows) {
+  let headerIdx = rows.findIndex(r => r.includes('date') || r.includes('Date'));
+  if (headerIdx === -1) headerIdx = 0;
+  const headers = rows[headerIdx].map(h => h.trim().toLowerCase());
+  const data = rows.slice(headerIdx + 1);
+  return data.map(row => {
+    const r = {};
+    headers.forEach((h, i) => r[h] = (row[i] || '').trim());
+    return { date: (r['date'] || '').slice(0, 10), type: r['type'] || 'Trade', asset: r['currency'] || r['asset'] || '', qty: Math.abs(parseFloat(r['amount'] || 0)), valueUSD: 0, exchange: 'Firi' };
+  }).filter(r => r.date && r.asset);
 }
 
-function normalizeFiri(rows) {
-  // Firi format varies – common fields
-  return rows.filter(r => r['type'] || r['Type']).map(r => {
-    const type = (r['type'] || r['Type'] || '').toLowerCase();
-    return {
-      coin: (r['currency'] || r['Currency'] || r['asset'] || '').toUpperCase(),
-      type: type.includes('kjøp') || type.includes('buy') ? 'buy' : 'sell',
-      amount: Math.abs(parseFloat(r['amount'] || r['Amount'] || 0)),
-      priceNOK: parseFloat(r['price'] || r['Price'] || r['rate'] || 0),
-      priceUSD: 0,
-      date: (r['date'] || r['Date'] || r['timestamp'] || '').slice(0,10),
-      exchange: 'Firi',
-      fee: parseFloat(r['fee'] || r['Fee'] || 0)
-    };
-  }).filter(r => r.coin && r.amount > 0);
+function parseKucoin(rows) {
+  let headerIdx = rows.findIndex(r => r.includes('Time') || r.includes('tradeCreatedAt'));
+  if (headerIdx === -1) headerIdx = 0;
+  const headers = rows[headerIdx].map(h => h.trim());
+  const data = rows.slice(headerIdx + 1);
+  return data.map(row => {
+    const r = {};
+    headers.forEach((h, i) => r[h] = (row[i] || '').trim());
+    const date = (r['Time'] || r['tradeCreatedAt'] || '').slice(0, 10);
+    const side = (r['Side'] || '').toLowerCase();
+    const symbol = r['Symbol'] || '';
+    const asset = symbol.split('-')[0] || symbol;
+    const qty = parseFloat(r['Filled Amount'] || r['size'] || 0);
+    const price = parseFloat(r['Price'] || 0);
+    return { date, type: side === 'buy' ? 'Buy' : 'Sell', asset, qty: Math.abs(qty), valueUSD: qty * price, exchange: 'KuCoin' };
+  }).filter(r => r.date && r.asset);
 }
 
-function normalizeKucoin(rows) {
-  // Kucoin format: Order Time, Symbol, Side, Price, Amount, Fee
-  return rows.filter(r => r['Side'] || r['side']).map(r => {
-    const side = (r['Side'] || r['side'] || '').toLowerCase();
-    const symbol = r['Symbol'] || r['symbol'] || '';
-    const coin = symbol.replace(/-USDT|-BTC|-ETH/,'').split('-')[0];
-    return {
-      coin: coin.toUpperCase(),
-      type: side === 'buy' ? 'buy' : 'sell',
-      amount: Math.abs(parseFloat(r['Amount'] || r['amount'] || 0)),
-      priceNOK: parseFloat(r['Price'] || r['price'] || 0) * 10.5,
-      priceUSD: parseFloat(r['Price'] || r['price'] || 0),
-      date: (r['Order Time'] || r['time'] || '').slice(0,10),
-      exchange: 'Kucoin',
-      fee: parseFloat(r['Fee'] || r['fee'] || 0)
-    };
-  }).filter(r => r.coin && r.amount > 0);
+// ─── RENDER ────────────────────────────────────────────────
+function renderUploaded(name, count) {
+  const list = document.getElementById('uploadedList');
+  const item = document.createElement('div');
+  item.className = 'uploaded-item';
+  item.innerHTML = `<span>📄 ${name} · ${count} transaksjoner</span><button class="rm-btn" onclick="removeFile(this)">×</button>`;
+  list.appendChild(item);
 }
 
-// ============================================================
-// FIFO TAX CALCULATION
-// ============================================================
-function calculateTax() {
-  const txs = [...state.transactions].sort((a, b) => new Date(a.date) - new Date(b.date));
-  const portfolio = {}; // { coin: [{amount, priceNOK}] }
-  let totalGain = 0;
-  let totalLoss = 0;
-  const byMonth = {};
-  const byCoin = {};
-
-  txs.forEach(tx => {
-    if (!tx.coin || !tx.amount) return;
-
-    if (tx.type === 'buy' || tx.type === 'stake') {
-      if (!portfolio[tx.coin]) portfolio[tx.coin] = [];
-      portfolio[tx.coin].push({ amount: tx.amount, priceNOK: tx.priceNOK || 0 });
-      tx.gain = null;
-    }
-
-    if (tx.type === 'sell') {
-      if (!portfolio[tx.coin] || portfolio[tx.coin].length === 0) {
-        tx.gain = 0;
-        return;
-      }
-      let remaining = tx.amount;
-      let costBasis = 0;
-
-      while (remaining > 0 && portfolio[tx.coin].length > 0) {
-        const lot = portfolio[tx.coin][0];
-        const used = Math.min(lot.amount, remaining);
-        costBasis += used * lot.priceNOK;
-        lot.amount -= used;
-        remaining -= used;
-        if (lot.amount <= 0) portfolio[tx.coin].shift();
-      }
-
-      const proceeds = tx.amount * tx.priceNOK;
-      const gain = proceeds - costBasis;
-      tx.gain = gain;
-
-      if (gain > 0) totalGain += gain;
-      else totalLoss += Math.abs(gain);
-
-      const month = tx.date ? tx.date.slice(0, 7) : 'ukjent';
-      byMonth[month] = (byMonth[month] || 0) + gain;
-
-      byCoin[tx.coin] = (byCoin[tx.coin] || 0) + gain;
-    }
-  });
-
-  const taxable = Math.max(0, totalGain - totalLoss);
-  const tax = taxable * 0.22;
-
-  state.taxData = { gain: totalGain, loss: totalLoss, tax, taxable, byMonth, byCoin };
-  state.transactions = txs;
-
-  updateUI();
+function removeFile(btn) {
+  btn.closest('.uploaded-item').remove();
+  state.transactions = [];
+  document.getElementById('resultsStep').style.display = 'none';
 }
 
-// ============================================================
-// UI UPDATES
-// ============================================================
-function updateUI() {
-  const { gain, loss, tax } = state.taxData;
-
-  // Sidebar
-  document.getElementById('sidebarTax').textContent = formatNOK(tax);
-
-  // Stats
-  document.getElementById('statTx').textContent = state.transactions.length;
-  document.getElementById('statGain').textContent = formatNOK(gain);
-  document.getElementById('statTax').textContent = formatNOK(tax);
-
-  // Report
-  document.getElementById('reportGain').textContent = formatNOK(gain);
-  document.getElementById('reportLoss').textContent = formatNOK(loss);
-  document.getElementById('reportTax').textContent = formatNOK(tax);
-
-  renderTransactions();
-  renderChart();
-  renderHoldings();
-  renderTaxBreakdown();
-  updateReportState();
+function setCurrency(cur) {
+  state.currency = cur;
+  document.getElementById('btnNOK').classList.toggle('active', cur === 'NOK');
+  document.getElementById('btnUSD').classList.toggle('active', cur === 'USD');
+  renderResults();
 }
 
-function renderTransactions() {
-  const body = document.getElementById('txBody');
-  document.getElementById('txCount').textContent = `${state.transactions.length} transaksjoner`;
+function fmt(usd) {
+  const val = state.currency === 'NOK' ? usd * USD_NOK : usd;
+  return val.toLocaleString('nb-NO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + (state.currency === 'NOK' ? ' kr' : ' USD');
+}
 
-  if (state.transactions.length === 0) {
-    body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted)">Ingen transaksjoner lastet inn ennå</td></tr>`;
+function setFilter(f, btn) {
+  state.filter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function renderResults() {
+  document.getElementById('resultsStep').style.display = 'block';
+  document.getElementById('resultsStep').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const txs = state.transactions;
+  const stakingIncome = txs.filter(t => t.type === 'Staking Income').reduce((s, t) => s + t.valueUSD, 0);
+  const received = txs.filter(t => t.type === 'Receive').reduce((s, t) => s + t.valueUSD, 0);
+  const totalIncome = stakingIncome + received;
+  const skattIncome = totalIncome * 0.22;
+  const antallMynt = [...new Set(txs.map(t => t.asset))].length;
+
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Transaksjoner</div><div class="stat-value blue">${txs.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Staking-inntekt</div><div class="stat-value green">${fmt(stakingIncome)}</div></div>
+    <div class="stat-card"><div class="stat-label">Totalt mottatt</div><div class="stat-value blue">${fmt(received)}</div></div>
+    <div class="stat-card"><div class="stat-label">Antall mynter</div><div class="stat-value amber">${antallMynt}</div></div>
+  `;
+
+  document.getElementById('skattBox').innerHTML = `
+    <div style="font-size:13px;font-weight:500;margin-bottom:1rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Skatteestimat 2025/2026</div>
+    <div class="skatt-row"><span>Staking-inntekt (skattepliktig)</span><span style="color:var(--green)">${fmt(stakingIncome)}</span></div>
+    <div class="skatt-row"><span>Mottatt krypto (skattepliktig)</span><span style="color:var(--blue)">${fmt(received)}</span></div>
+    <div class="skatt-row"><span>Sum skattepliktig inntekt</span><span>${fmt(totalIncome)}</span></div>
+    <div class="skatt-row total"><span>Estimert skatt (22%)</span><span style="color:var(--amber)">${fmt(skattIncome)}</span></div>
+  `;
+
+  renderTable();
+}
+
+function renderTable() {
+  const txs = state.filter === 'all'
+    ? state.transactions
+    : state.transactions.filter(t => t.type.toLowerCase().includes(state.filter.toLowerCase()));
+
+  const tbody = document.getElementById('txTable');
+  if (!txs.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem">Ingen transaksjoner</td></tr>';
     return;
   }
 
-  body.innerHTML = [...state.transactions].reverse().slice(0, 200).map(tx => `
+  const typeClass = t => {
+    if (t.includes('Staking')) return 'type-income';
+    if (t === 'Receive') return 'type-receive';
+    if (t.includes('Transfer')) return 'type-transfer';
+    if (t === 'Buy') return 'type-buy';
+    if (t === 'Sell') return 'type-sell';
+    return '';
+  };
+
+  tbody.innerHTML = txs.slice(0, 200).map(t => `
     <tr>
-      <td><strong>${tx.coin}</strong><br><span style="font-size:11px;color:var(--muted)">${tx.exchange || ''}</span></td>
-      <td><span class="badge badge-${tx.type}">${tx.type === 'buy' ? 'Kjøp' : tx.type === 'sell' ? 'Salg' : 'Staking'}</span></td>
-      <td class="mono">${tx.amount.toFixed(6)}</td>
-      <td class="mono">${formatNOK(tx.priceNOK)}</td>
-      <td class="mono">${formatNOK(tx.amount * tx.priceNOK)}</td>
-      <td>${tx.gain !== null && tx.gain !== undefined
-        ? `<span class="${tx.gain >= 0 ? 'positive' : 'negative'} mono">${tx.gain >= 0 ? '+' : ''}${formatNOK(tx.gain)}</span>`
-        : '<span style="color:var(--muted)">—</span>'}</td>
-      <td class="mono" style="color:var(--muted)">${tx.date || '—'}</td>
-    </tr>`).join('');
-}
+      <td>${t.date}</td>
+      <td class="${typeClass(t.type)}">${t.type}</td>
+      <td>${t.asset}</td>
+      <td>${t.qty.toFixed(6)}</td>
+      <td>${t.valueUSD > 0 ? fmt(t.valueUSD) : '—'}</td>
+    </tr>
+  `).join('');
 
-function renderChart() {
-  const el = document.getElementById('dashChart');
-  if (!el) return;
-  const months = ['Jan','Feb','Mar','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Des'];
-  const monthData = Array(12).fill(0);
-
-  Object.entries(state.taxData.byMonth).forEach(([key, val]) => {
-    const month = parseInt(key.slice(5, 7)) - 1;
-    if (month >= 0 && month < 12) monthData[month] = val;
-  });
-
-  const max = Math.max(...monthData.map(Math.abs), 1);
-  el.innerHTML = monthData.map((v, i) => `
-    <div class="mini-bar-wrap">
-      <div class="mini-bar" style="height:${Math.max(4, (Math.abs(v)/max)*72)}px;background:${v >= 0 ? 'var(--accent)' : 'var(--red)'}"></div>
-      <div class="mini-bar-label">${months[i]}</div>
-    </div>`).join('');
-}
-
-function renderHoldings() {
-  const el = document.getElementById('holdingsList');
-  if (!el) return;
-  if (Object.keys(state.taxData.byCoin).length === 0) {
-    el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:14px;padding:20px">Ingen beholdning ennå</div>';
-    return;
-  }
-  const entries = Object.entries(state.taxData.byCoin).sort((a,b) => b[1]-a[1]).slice(0,5);
-  el.innerHTML = entries.map(([coin, gain]) => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
-      <span style="font-weight:500">${coin}</span>
-      <span class="mono ${gain >= 0 ? 'positive' : 'negative'}">${gain >= 0 ? '+' : ''}${formatNOK(gain)}</span>
-    </div>`).join('');
-}
-
-function renderTaxBreakdown() {
-  const el = document.getElementById('taxBreakdown');
-  if (!el) return;
-  const { gain, loss, taxable, tax } = state.taxData;
-  el.innerHTML = `
-    <div class="tax-row"><span class="tax-label-text">Gevinst 2025</span><span class="tax-amount-val positive">+${formatNOK(gain)}</span></div>
-    <div class="tax-row"><span class="tax-label-text">Tap 2025</span><span class="tax-amount-val">${loss > 0 ? '-' : ''}${formatNOK(loss)}</span></div>
-    <div class="tax-row"><span class="tax-label-text">Skattepliktig beløp</span><span class="tax-amount-val mono">${formatNOK(taxable)}</span></div>
-    <div class="tax-row"><span class="tax-label-text">Skattesats</span><span class="tax-amount-val mono">22%</span></div>
-    <div class="tax-row"><span>Skyldig skatt 2025</span><span class="tax-amount-val" style="color:var(--red)">${formatNOK(tax)}</span></div>`;
-}
-
-function renderUploadedFiles() {
-  const el = document.getElementById('uploadedFiles');
-  el.innerHTML = state.uploadedFiles.map(f => `
-    <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--white);border:1px solid var(--border);border-radius:10px">
-      <span style="font-size:20px">📄</span>
-      <div>
-        <div style="font-size:14px;font-weight:500">${f.name}</div>
-        <div style="font-size:12px;color:var(--muted)">${f.exchange} · ${f.count} transaksjoner</div>
-      </div>
-      <span style="margin-left:auto;color:var(--accent);font-size:20px">✓</span>
-    </div>`).join('');
-}
-
-function updateReportState() {
-  const hasData = state.transactions.length > 0;
-  document.getElementById('reportEmpty').style.display = hasData ? 'none' : 'block';
-  document.getElementById('reportLocked').style.display = 'none';
-
-  if (hasData && state.hasPaid) {
-    document.getElementById('reportPaywall').style.display = 'none';
-    document.getElementById('reportPaid').style.display = 'block';
-  } else if (hasData) {
-    document.getElementById('reportPaywall').style.display = 'block';
-    document.getElementById('reportPaid').style.display = 'none';
+  if (txs.length > 200) {
+    tbody.innerHTML += `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:1rem;font-size:12px">Viser 200 av ${txs.length} transaksjoner</td></tr>`;
   }
 }
 
-// ============================================================
-// NAVIGATION
-// ============================================================
-function showPage(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  const pages = ['upload', 'dashboard', 'transactions', 'report'];
-  const idx = pages.indexOf(page);
-  document.querySelectorAll('.nav-item')[idx]?.classList.add('active');
+function exportPDF() {
+  window.print();
+  showToast('Bruk "Lagre som PDF" i utskriftsdialogen', 'ok');
 }
 
-function processAndContinue() {
-  if (state.transactions.length === 0) {
-    showToast('Last opp en CSV-fil først', 'error');
-    return;
-  }
-  showPage('dashboard');
-  showToast(`✓ ${state.transactions.length} transaksjoner beregnet`, 'success');
-}
-
-// ============================================================
-// PAYMENT (Stripe)
-// ============================================================
-function openPayment() {
-  document.getElementById('paymentGate').classList.add('open');
-}
-function closePayment() {
-  document.getElementById('paymentGate').classList.remove('open');
-}
-
-async function initiateStripePayment() {
-  // I produksjon: kall din backend som oppretter en Stripe Checkout Session
-  // Backend returnerer session URL, redirect dit
-  // Her viser vi demo-flyten:
-
-  if (STRIPE_PUBLISHABLE_KEY.includes('DIN_STRIPE')) {
-    // Demo mode – simulerer betaling
-    showToast('⚠️ Demo: Koble til Stripe for ekte betaling', 'error');
-    setTimeout(() => {
-      // Simulerer vellykket betaling
-      state.hasPaid = true;
-      localStorage.setItem('dks_paid_2025', 'true');
-      closePayment();
-      updateReportState();
-      showToast('✓ Betaling godkjent! Rapporten er låst opp.', 'success');
-    }, 1500);
-    return;
-  }
-
-  // Prod: redirect til Stripe Checkout
-  try {
-    const response = await fetch('/api/create-checkout-session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ priceId: STRIPE_PRICE_ID })
-    });
-    const { url } = await response.json();
-    window.location.href = url;
-  } catch (e) {
-    showToast('Betalingsfeil – prøv igjen', 'error');
-  }
-}
-
-// Check for successful payment return
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('payment') === 'success') {
-  state.hasPaid = true;
-  localStorage.setItem('dks_paid_2025', 'true');
-  showToast('✓ Betaling godkjent! Rapporten er låst opp.', 'success');
-  showPage('report');
-}
-
-// ============================================================
-// PDF GENERATION
-// ============================================================
-function downloadPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  const { gain, loss, taxable, tax } = state.taxData;
-
-  // Header
-  doc.setFontSize(22);
-  doc.setFont('helvetica', 'bold');
-  doc.text('DinKryptoskatt – Skatterapport 2025', 20, 25);
-
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(100);
-  doc.text('Generert: ' + new Date().toLocaleDateString('nb-NO'), 20, 35);
-  doc.text('Metode: FIFO (First In, First Out)', 20, 42);
-
-  // Divider
-  doc.setDrawColor(200);
-  doc.line(20, 48, 190, 48);
-
-  // Summary
-  doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(0);
-  doc.text('Skatteberegning', 20, 60);
-
-  const rows = [
-    ['Total gevinst 2025', formatNOK(gain)],
-    ['Total tap 2025', '-' + formatNOK(loss)],
-    ['Skattepliktig beløp', formatNOK(taxable)],
-    ['Skattesats', '22%'],
-    ['SKYLDIG SKATT 2025', formatNOK(tax)]
-  ];
-
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  let y = 72;
-  rows.forEach((row, i) => {
-    if (i === rows.length - 1) {
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(180, 0, 0);
-    }
-    doc.text(row[0], 20, y);
-    doc.text(row[1], 190, y, { align: 'right' });
-    y += 10;
-  });
-
-  // Transaction list
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(0);
-  doc.setFontSize(14);
-  doc.text('Transaksjoner', 20, y + 15);
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  y += 25;
-
-  const headers = ['Dato', 'Mynt', 'Type', 'Antall', 'Pris NOK', 'Gevinst/tap'];
-  const colX = [20, 45, 75, 100, 130, 165];
-  headers.forEach((h, i) => {
-    doc.setFont('helvetica', 'bold');
-    doc.text(h, colX[i], y);
-  });
-  y += 6;
-  doc.line(20, y, 190, y);
-  y += 4;
-
-  doc.setFont('helvetica', 'normal');
-  state.transactions.slice(0, 80).forEach(tx => {
-    if (y > 270) {
-      doc.addPage();
-      y = 20;
-    }
-    doc.text(tx.date || '', colX[0], y);
-    doc.text(tx.coin || '', colX[1], y);
-    doc.text(tx.type === 'buy' ? 'Kjøp' : 'Salg', colX[2], y);
-    doc.text(tx.amount.toFixed(4), colX[3], y);
-    doc.text(formatNOK(tx.priceNOK), colX[4], y);
-    if (tx.gain !== null && tx.gain !== undefined) {
-      const gainText = (tx.gain >= 0 ? '+' : '') + formatNOK(tx.gain);
-      doc.setTextColor(tx.gain >= 0 ? 26 : 220, tx.gain >= 0 ? 107 : 38, tx.gain >= 0 ? 60 : 38);
-      doc.text(gainText, colX[5], y);
-      doc.setTextColor(0);
-    }
-    y += 6;
-  });
-
-  // Footer
-  doc.setFontSize(9);
-  doc.setTextColor(150);
-  doc.text('DineKryptoskatt.no · hei@dinekryptoskatt.no · Generert ' + new Date().toLocaleString('nb-NO'), 20, 285);
-
-  doc.save('dinkryptoskatt-2025.pdf');
-  showToast('✓ PDF lastet ned!', 'success');
-}
-
-// ============================================================
-// HELPERS
-// ============================================================
-function formatNOK(n) {
-  if (!n && n !== 0) return 'kr 0';
-  return 'kr ' + Math.round(n).toLocaleString('nb-NO');
-}
-
-function showToast(msg, type = 'success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast ${type} show`;
-  setTimeout(() => t.classList.remove('show'), 3500);
-}
+// Drag & drop
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+dz.addEventListener('drop', e => {
+  e.preventDefault();
+  dz.classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) handleFile(file);
+});
 </script>
 </body>
 </html>
