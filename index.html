@@ -4,106 +4,86 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DineKryptoskatt — Kryptoskatt gjort enkelt for Norge</title>
-<meta name="description" content="Last opp CSV fra Coinbase, Binance, Kraken, Firi eller Kucoin og få en ferdig skatterapport for Skatteetaten. Gratis oppstartstilbud.">
-<meta property="og:title" content="DineKryptoskatt — Kryptoskatt på 2 minutter">
-<meta property="og:description" content="Ferdig skatteberegning for Skatteetaten. Last opp CSV fra din børs og vi gjør resten. Gratis nå.">
+<meta name="description" content="Helt gratis for skatteåret 2025. Last opp CSV fra Coinbase, Binance, Kraken, Firi eller Kucoin og få ferdig skatterapport på 2 minutter.">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap');
-
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;
-  --border:#30363d;--text:#e6edf3;--muted:#7d8590;
-  --green:#3fb950;--green-bg:#0d2f1a;
-  --blue:#58a6ff;--blue-bg:#0c2a4a;
-  --amber:#d29922;--amber-bg:#2d1f00;
-  --red:#f85149;
-}
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#7d8590;--green:#3fb950;--green-bg:#0d2f1a;--blue:#58a6ff;--blue-bg:#0c2a4a;--amber:#d29922;--amber-bg:#2d1f00;--red:#f85149}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;line-height:1.6}
 a{color:inherit;text-decoration:none}
 
-/* NAV */
-nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(13,17,23,0.95);backdrop-filter:blur(8px);z-index:100}
-.logo{font-family:'Fraunces',serif;font-size:1.2rem}
-.logo span{color:var(--green)}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(13,17,23,0.97);backdrop-filter:blur(8px);z-index:100}
+.logo{font-family:'Fraunces',serif;font-size:1.2rem}.logo span{color:var(--green)}
 .nav-links{display:flex;align-items:center;gap:1.5rem}
-.nav-links a{font-size:13px;color:var(--muted);transition:color .15s}
-.nav-links a:hover{color:var(--text)}
-.btn-nav{background:var(--green);color:#000;padding:0.5rem 1.25rem;border-radius:6px;font-size:13px;font-family:'DM Mono',monospace;font-weight:500;transition:opacity .15s}
-.btn-nav:hover{opacity:.85}
+.nav-links a{font-size:13px;color:var(--muted);transition:color .15s}.nav-links a:hover{color:var(--text)}
+.btn-nav{background:var(--green);color:#000;padding:.5rem 1.25rem;border-radius:6px;font-size:13px;font-family:'DM Mono',monospace;font-weight:500}
+
+/* FREE BANNER — full width top */
+.free-banner{background:var(--green);color:#000;text-align:center;padding:.75rem 1rem;font-size:14px;font-weight:500;font-family:'DM Mono',monospace;letter-spacing:.02em}
+.free-banner strong{font-weight:500}
 
 /* HERO */
-.hero{max-width:860px;margin:0 auto;padding:5rem 1.5rem 4rem;text-align:center}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--green-bg);border:1px solid var(--green);border-radius:20px;padding:5px 16px;font-size:12px;color:var(--green);margin-bottom:2rem}
-.hero h1{font-family:'Fraunces',serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:600;line-height:1.2;margin-bottom:1.5rem}
-.hero h1 em{color:var(--green);font-style:italic}
-.hero p{font-size:15px;color:var(--muted);max-width:560px;margin:0 auto 2.5rem;line-height:1.8}
-.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.btn-primary{background:var(--green);color:#000;padding:0.875rem 2rem;border-radius:8px;font-size:14px;font-family:'DM Mono',monospace;font-weight:500;transition:opacity .15s;display:inline-block}
-.btn-primary:hover{opacity:.85}
-.btn-secondary{background:transparent;color:var(--text);padding:0.875rem 2rem;border-radius:8px;font-size:14px;border:1px solid var(--border);font-family:'DM Mono',monospace;transition:all .15s;display:inline-block}
-.btn-secondary:hover{border-color:var(--text)}
+.hero{max-width:860px;margin:0 auto;padding:4rem 1.5rem 3rem;text-align:center}
+.free-hero-box{background:var(--green-bg);border:2px solid var(--green);border-radius:16px;padding:2rem 2.5rem;margin-bottom:3rem;position:relative;overflow:hidden}
+.free-hero-box::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:var(--green);opacity:.06;border-radius:50%}
+.free-year{font-size:12px;color:var(--green);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.5rem}
+.free-headline{font-family:'Fraunces',serif;font-size:2rem;color:var(--green);font-weight:600;margin-bottom:.75rem}
+.free-desc{font-size:14px;color:#7ab97f;line-height:1.7;max-width:480px;margin:0 auto .75rem}
+.free-tag{display:inline-block;background:#000;color:var(--green);font-size:12px;padding:4px 16px;border-radius:20px;border:1px solid var(--green)}
 
-/* TERMINAL DEMO */
-.terminal{max-width:680px;margin:4rem auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.terminal-bar{background:var(--surface2);padding:0.75rem 1rem;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
-.dot{width:12px;height:12px;border-radius:50%}
-.dot-red{background:#f85149}
-.dot-amber{background:#d29922}
-.dot-green{background:#3fb950}
-.terminal-title{font-size:12px;color:var(--muted);margin-left:4px}
-.terminal-body{padding:1.5rem;font-size:13px;line-height:2}
-.t-muted{color:var(--muted)}
-.t-green{color:var(--green)}
-.t-blue{color:var(--blue)}
-.t-amber{color:var(--amber)}
-.t-comment{color:#484f58}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:600;line-height:1.2;margin-bottom:1.25rem}
+.hero h1 em{color:var(--green);font-style:italic}
+.hero p{font-size:15px;color:var(--muted);max-width:520px;margin:0 auto 2.5rem;line-height:1.8}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:var(--green);color:#000;padding:.875rem 2rem;border-radius:8px;font-size:14px;font-family:'DM Mono',monospace;font-weight:500;display:inline-block;transition:opacity .15s}.btn-primary:hover{opacity:.85}
+.btn-secondary{background:transparent;color:var(--text);padding:.875rem 2rem;border-radius:8px;font-size:14px;border:1px solid var(--border);font-family:'DM Mono',monospace;display:inline-block}
 
 /* STATS */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;max-width:860px;margin:0 auto 5rem}
-.stat-item{background:var(--surface);padding:2rem 1.5rem;text-align:center}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;max-width:860px;margin:0 auto 5rem}
+.stat-item{background:var(--surface);padding:1.75rem 1.25rem;text-align:center}
 .stat-num{font-family:'Fraunces',serif;font-size:2rem;font-weight:600;color:var(--green);display:block;margin-bottom:4px}
-.stat-lbl{font-size:12px;color:var(--muted)}
+.stat-lbl{font-size:11px;color:var(--muted)}
 
-/* HOW IT WORKS */
+/* SECTION */
 .section{max-width:860px;margin:0 auto;padding:0 1.5rem 5rem}
 .section-label{font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}
 .section h2{font-family:'Fraunces',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:600;margin-bottom:1rem}
 .section p{color:var(--muted);font-size:14px;line-height:1.8;max-width:560px}
+.section-divider{border:none;border-top:1px solid var(--border);max-width:860px;margin:0 auto 5rem}
 
+/* STEPS */
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:2.5rem}
-.step-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem}
-.step-card:hover{border-color:var(--green)}
-.step-n{font-size:11px;color:var(--green);margin-bottom:0.75rem;font-weight:500}
-.step-title{font-size:14px;font-weight:500;margin-bottom:0.5rem}
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;transition:border-color .2s}.step-card:hover{border-color:var(--green)}
+.step-n{font-size:11px;color:var(--green);margin-bottom:.75rem;font-weight:500}
+.step-title{font-size:14px;font-weight:500;margin-bottom:.5rem}
 .step-desc{font-size:13px;color:var(--muted);line-height:1.7}
 
 /* EXCHANGES */
 .exchanges{display:flex;flex-wrap:wrap;gap:8px;margin-top:1.5rem}
-.ex-tag{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.5rem 1rem;font-size:13px;color:var(--muted)}
+.ex-tag{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.5rem 1rem;font-size:13px;color:var(--muted)}
 
 /* FEATURES */
 .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:2rem}
 .feature{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem}
-.feature-icon{font-size:1.25rem;margin-bottom:0.75rem;display:block}
-.feature-title{font-size:13px;font-weight:500;margin-bottom:0.4rem}
+.feature-icon{font-size:1.25rem;margin-bottom:.75rem;display:block}
+.feature-title{font-size:13px;font-weight:500;margin-bottom:.4rem}
 .feature-desc{font-size:12px;color:var(--muted);line-height:1.7}
 
 /* PRICING */
 .pricing-wrap{max-width:480px;margin:0 auto}
 .price-card{background:var(--surface);border:2px solid var(--green);border-radius:16px;padding:2.5rem;text-align:center}
-.price-badge{display:inline-block;background:var(--green-bg);color:var(--green);font-size:11px;padding:4px 14px;border-radius:20px;border:1px solid var(--green);margin-bottom:1.5rem}
-.price-amount{font-family:'Fraunces',serif;font-size:4rem;font-weight:600;color:var(--green);line-height:1}
-.price-unit{font-size:13px;color:var(--muted);margin:0.5rem 0 1.5rem}
+.price-badge{display:inline-block;background:var(--green);color:#000;font-size:12px;padding:5px 18px;border-radius:20px;margin-bottom:1.5rem;font-weight:500}
+.price-amount{font-family:'Fraunces',serif;font-size:5rem;font-weight:600;color:var(--green);line-height:1}
+.price-year{font-size:13px;color:var(--green);margin:.25rem 0 .25rem;font-weight:500}
+.price-unit{font-size:12px;color:var(--muted);margin-bottom:1.5rem}
 .price-features{list-style:none;text-align:left;margin-bottom:2rem}
-.price-features li{font-size:13px;color:var(--muted);padding:0.4rem 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.price-features li{font-size:13px;color:var(--muted);padding:.5rem 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
 .price-features li:last-child{border-bottom:none}
 .price-features li::before{content:'✓';color:var(--green);font-size:11px;flex-shrink:0}
 .price-note{font-size:11px;color:var(--muted);margin-top:1rem;line-height:1.7}
 
 /* FAQ */
-.faq{max-width:680px;margin:0 auto}
 .faq-item{border-bottom:1px solid var(--border)}
 .faq-q{width:100%;background:none;border:none;color:var(--text);font-family:'DM Mono',monospace;font-size:14px;padding:1.25rem 0;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem}
 .faq-icon{color:var(--green);font-size:1.2rem;flex-shrink:0;transition:transform .2s}
@@ -111,36 +91,66 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:1.25re
 .faq-a{font-size:13px;color:var(--muted);line-height:1.8;max-height:0;overflow:hidden;transition:max-height .3s,padding .3s}
 .faq-item.open .faq-a{max-height:200px;padding-bottom:1.25rem}
 
+/* FEEDBACK */
+.feedback-section{max-width:680px;margin:0 auto;padding:0 1.5rem 5rem}
+.feedback-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem}
+.stars{display:flex;gap:8px;margin-bottom:1.5rem}
+.star{font-size:2rem;cursor:pointer;opacity:.3;transition:opacity .15s;user-select:none}
+.star.active{opacity:1}
+.star:hover{opacity:.7}
+.feedback-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;line-height:1.6;resize:vertical;min-height:100px;margin-bottom:1rem;transition:border-color .2s}
+.feedback-input:focus{outline:none;border-color:var(--green)}
+.feedback-input::placeholder{color:var(--muted)}
+.feedback-meta{display:flex;gap:8px;margin-bottom:1rem}
+.feedback-name{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;transition:border-color .2s}
+.feedback-name:focus{outline:none;border-color:var(--green)}
+.feedback-name::placeholder{color:var(--muted)}
+.btn-feedback{background:var(--green);color:#000;border:none;padding:.75rem 1.5rem;border-radius:8px;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;cursor:pointer;width:100%;transition:opacity .15s}
+.btn-feedback:hover{opacity:.85}
+.reviews{margin-top:2rem;display:flex;flex-direction:column;gap:12px}
+.review-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
+.review-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.review-name{font-size:13px;font-weight:500}
+.review-stars{font-size:14px}
+.review-text{font-size:13px;color:var(--muted);line-height:1.7}
+.review-date{font-size:11px;color:#484f58;margin-top:.5rem}
+.sent-msg{background:var(--green-bg);border:1px solid var(--green);border-radius:8px;padding:1rem;text-align:center;font-size:13px;color:var(--green);display:none}
+
 /* CTA */
 .cta-section{background:var(--green-bg);border-top:1px solid var(--green);border-bottom:1px solid var(--green);padding:4rem 1.5rem;text-align:center;margin-bottom:0}
 .cta-section h2{font-family:'Fraunces',serif;font-size:2rem;font-weight:600;margin-bottom:1rem}
-.cta-section p{color:var(--muted);font-size:14px;margin-bottom:2rem}
+.cta-section p{color:#7ab97f;font-size:14px;margin-bottom:2rem}
 
-/* FOOTER */
 footer{background:var(--surface);border-top:1px solid var(--border);padding:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;font-size:12px;color:var(--muted)}
-footer a{color:var(--muted);transition:color .15s}
-footer a:hover{color:var(--text)}
-.footer-links{display:flex;gap:1.5rem}
-
-/* DIVIDER */
-.section-divider{border:none;border-top:1px solid var(--border);max-width:860px;margin:0 auto 5rem}
+footer a{color:var(--muted)}.footer-links{display:flex;gap:1.5rem}
 </style>
 </head>
 <body>
+
+<div class="free-banner">
+  🎉 Skatteåret 2025 er helt gratis — ingen kredittkort, ingen konto, ingen begrensninger
+</div>
 
 <nav>
   <span class="logo">DineKrypto<span>Skatt</span></span>
   <div class="nav-links">
     <a href="#hvordan">Hvordan</a>
     <a href="#pris">Pris</a>
-    <a href="#faq">FAQ</a>
+    <a href="#tilbakemelding">Tilbakemelding</a>
     <a href="app.html" class="btn-nav">Start gratis →</a>
   </div>
 </nav>
 
-<!-- HERO -->
 <div class="hero">
-  <div class="hero-badge">🎉 Gratis oppstartstilbud — ingen konto nødvendig</div>
+
+  <!-- BIG FREE BOX -->
+  <div class="free-hero-box">
+    <div class="free-year">Skatteåret 2025</div>
+    <div class="free-headline">100% gratis — helt uten unntak</div>
+    <div class="free-desc">Vi er i oppstartsfasen og ønsker at flest mulig skal prøve tjenesten. Skatteåret 2025 koster ingenting — ingen kredittkort, ingen konto, ingen skjulte avgifter.</div>
+    <span class="free-tag">Gratis ut 2025-sesongen</span>
+  </div>
+
   <h1>Kryptoskatten din<br><em>ferdig på 2 minutter</em></h1>
   <p>Last opp CSV fra børsen din. Vi beregner gevinst, tap og staking-inntekt automatisk — klar for Skatteetaten.</p>
   <div class="hero-btns">
@@ -149,69 +159,31 @@ footer a:hover{color:var(--text)}
   </div>
 </div>
 
-<!-- TERMINAL DEMO -->
-<div style="padding:0 1.5rem">
-<div class="terminal">
-  <div class="terminal-bar">
-    <div class="dot dot-red"></div>
-    <div class="dot dot-amber"></div>
-    <div class="dot dot-green"></div>
-    <span class="terminal-title">dinekryptoskatt — skatteberegner</span>
-  </div>
-  <div class="terminal-body">
-    <div><span class="t-comment">// Laster inn Coinbase CSV...</span></div>
-    <div><span class="t-muted">$</span> <span class="t-green">parse</span>(<span class="t-blue">'coinbase_2025.csv'</span>)</div>
-    <div><span class="t-comment">// ✓ 219 transaksjoner lest inn</span></div>
-    <div>&nbsp;</div>
-    <div><span class="t-muted">Staking-inntekt:</span> <span class="t-green">4 821,50 kr</span></div>
-    <div><span class="t-muted">Estimert skatt (22%):</span> <span class="t-amber">1 060,73 kr</span></div>
-    <div><span class="t-muted">Mynter i portefølje:</span> <span class="t-blue">ETH, SOL, DOT, ADA, ATOM, POL</span></div>
-    <div>&nbsp;</div>
-    <div><span class="t-green">✓ Skatterapport klar for nedlasting</span></div>
+<div style="padding:0 1.5rem 3rem">
+  <div class="stats-row">
+    <div class="stat-item"><span class="stat-num">0 kr</span><span class="stat-lbl">Skatteåret 2025</span></div>
+    <div class="stat-item"><span class="stat-num">2 min</span><span class="stat-lbl">Fra CSV til rapport</span></div>
+    <div class="stat-item"><span class="stat-num">5</span><span class="stat-lbl">Støttede børser</span></div>
+    <div class="stat-item"><span class="stat-num">FIFO</span><span class="stat-lbl">Norsk skattemetode</span></div>
   </div>
 </div>
-</div>
 
-<!-- STATS -->
-<div style="padding:3rem 1.5rem">
-<div class="stats-row">
-  <div class="stat-item"><span class="stat-num">5</span><span class="stat-lbl">Støttede børser</span></div>
-  <div class="stat-item"><span class="stat-num">0 kr</span><span class="stat-lbl">Koster akkurat nå</span></div>
-  <div class="stat-item"><span class="stat-num">2 min</span><span class="stat-lbl">Fra CSV til rapport</span></div>
-  <div class="stat-item"><span class="stat-num">FIFO</span><span class="stat-lbl">Norsk skattemetode</span></div>
-</div>
-</div>
-
-<!-- HOW IT WORKS -->
 <div class="section" id="hvordan">
   <div class="section-label">Slik fungerer det</div>
   <h2>Tre steg til ferdig skatterapport</h2>
   <p>Ingen installasjon. Ingen konto. Dataene forlater aldri nettleseren din.</p>
   <div class="steps">
-    <div class="step-card">
-      <div class="step-n">01 — EKSPORTER</div>
-      <div class="step-title">Last ned CSV fra børsen</div>
-      <div class="step-desc">Vi viser deg nøyaktig hvor du finner transaksjonshistorikken på Coinbase, Binance, Kraken, Firi og KuCoin.</div>
-    </div>
-    <div class="step-card">
-      <div class="step-n">02 — LAST OPP</div>
-      <div class="step-title">Dra og slipp filen</div>
-      <div class="step-desc">Velg børs, last opp CSV. Parseren gjenkjenner formatet automatisk og beregner gevinst, tap og staking-inntekt.</div>
-    </div>
-    <div class="step-card">
-      <div class="step-n">03 — LAST NED</div>
-      <div class="step-title">Ferdig skatterapport</div>
-      <div class="step-desc">Last ned PDF-rapporten klar for Skatteetaten. Bruker FIFO-metoden som norsk lov krever.</div>
-    </div>
+    <div class="step-card"><div class="step-n">01 — EKSPORTER</div><div class="step-title">Last ned CSV fra børsen</div><div class="step-desc">Vi viser deg nøyaktig hvor du finner transaksjonshistorikken på Coinbase, Binance, Kraken, Firi og KuCoin.</div></div>
+    <div class="step-card"><div class="step-n">02 — LAST OPP</div><div class="step-title">Dra og slipp filen</div><div class="step-desc">Velg børs, last opp CSV. Parseren gjenkjenner formatet automatisk og beregner gevinst, tap og staking-inntekt.</div></div>
+    <div class="step-card"><div class="step-n">03 — LAST NED</div><div class="step-title">Ferdig skatterapport</div><div class="step-desc">Last ned PDF klar til skattemeldingen. Bruker FIFO-metoden norsk lov krever.</div></div>
   </div>
 </div>
 
 <hr class="section-divider">
 
-<!-- EXCHANGES -->
 <div class="section">
   <div class="section-label">Støttede børser</div>
-  <h2>Fungerer med de største norske og internasjonale børsene</h2>
+  <h2>Fungerer med de største børsene</h2>
   <div class="exchanges">
     <span class="ex-tag">🔵 Coinbase</span>
     <span class="ex-tag">🟡 Binance</span>
@@ -223,56 +195,31 @@ footer a:hover{color:var(--text)}
 
 <hr class="section-divider">
 
-<!-- FEATURES -->
 <div class="section">
   <div class="section-label">Funksjoner</div>
   <h2>Alt du trenger for kryptoskatten</h2>
   <div class="features">
-    <div class="feature">
-      <span class="feature-icon">🔒</span>
-      <div class="feature-title">100% privat</div>
-      <div class="feature-desc">CSV-filen prosesseres lokalt i nettleseren. Ingen data sendes til serveren vår.</div>
-    </div>
-    <div class="feature">
-      <span class="feature-icon">📊</span>
-      <div class="feature-title">FIFO-beregning</div>
-      <div class="feature-desc">Automatisk FIFO-beregning i henhold til Skatteetatens krav for kryptovaluta.</div>
-    </div>
-    <div class="feature">
-      <span class="feature-icon">💰</span>
-      <div class="feature-title">Staking-inntekt</div>
-      <div class="feature-desc">Håndterer staking, rewards og alle andre inntektstyper fra krypto.</div>
-    </div>
-    <div class="feature">
-      <span class="feature-icon">📄</span>
-      <div class="feature-title">PDF-rapport</div>
-      <div class="feature-desc">Last ned en ferdig skattelerapport klar til å bruke i skattemeldingen din.</div>
-    </div>
-    <div class="feature">
-      <span class="feature-icon">🔄</span>
-      <div class="feature-title">Flere børser</div>
-      <div class="feature-desc">Last opp CSV fra flere børser i samme beregning — alt slås sammen automatisk.</div>
-    </div>
-    <div class="feature">
-      <span class="feature-icon">🇳🇴</span>
-      <div class="feature-title">Norsk lov</div>
-      <div class="feature-desc">Bygget for norske skatteregler. Viser beløp i NOK med estimert USD/NOK-kurs.</div>
-    </div>
+    <div class="feature"><span class="feature-icon">🔒</span><div class="feature-title">100% privat</div><div class="feature-desc">CSV prosesseres lokalt i nettleseren. Ingen data sendes til serveren.</div></div>
+    <div class="feature"><span class="feature-icon">📊</span><div class="feature-title">FIFO-beregning</div><div class="feature-desc">Automatisk FIFO etter Skatteetatens krav for kryptovaluta i Norge.</div></div>
+    <div class="feature"><span class="feature-icon">💰</span><div class="feature-title">Staking-inntekt</div><div class="feature-desc">Håndterer staking, rewards og alle inntektstyper fra krypto.</div></div>
+    <div class="feature"><span class="feature-icon">📄</span><div class="feature-title">PDF-rapport</div><div class="feature-desc">Last ned ferdig skatterapport klar til skattemeldingen.</div></div>
+    <div class="feature"><span class="feature-icon">🔄</span><div class="feature-title">Flere børser</div><div class="feature-desc">Last opp CSV fra flere børser — alt slås sammen automatisk.</div></div>
+    <div class="feature"><span class="feature-icon">🇳🇴</span><div class="feature-title">Norsk lov</div><div class="feature-desc">Bygget for norske skatteregler. Beløp vises i NOK.</div></div>
   </div>
 </div>
 
 <hr class="section-divider">
 
-<!-- PRICING -->
 <div class="section" id="pris">
   <div class="section-label">Pris</div>
-  <h2>Ingen overraskelser</h2>
-  <p style="margin-bottom:2.5rem">Gratis i oppstartsfasen. Hjelp oss å teste — gi gjerne tilbakemelding!</p>
+  <h2>Skatteåret 2025 — gratis</h2>
+  <p style="margin-bottom:2.5rem">Vi er i beta og ønsker tilbakemeldinger. Til gjengjeld er alt gratis i 2025-sesongen.</p>
   <div class="pricing-wrap">
     <div class="price-card">
-      <div class="price-badge">🎉 Oppstartstilbud</div>
-      <div class="price-amount">0</div>
-      <div class="price-unit">kr · helt gratis akkurat nå</div>
+      <div class="price-badge">🎉 Skatteåret 2025 er gratis</div>
+      <div class="price-amount">0,-</div>
+      <div class="price-year">For skatteåret 2025</div>
+      <div class="price-unit">Ingen kredittkort · Ingen konto · Ingen begrensninger</div>
       <ul class="price-features">
         <li>Ubegrenset antall transaksjoner</li>
         <li>Alle 5 støttede børser</li>
@@ -281,62 +228,133 @@ footer a:hover{color:var(--text)}
         <li>Staking og rewards-beregning</li>
         <li>Ingen konto nødvendig</li>
       </ul>
-      <a href="app.html" class="btn-primary" style="display:block;text-align:center">Start nå — helt gratis →</a>
-      <div class="price-note">Ingen kredittkort. Ingen skjulte avgifter. Dataene dine forlater ikke nettleseren.</div>
+      <a href="app.html" class="btn-primary" style="display:block;text-align:center">Start nå — 0 kr →</a>
+      <div class="price-note">Gratis ut 2025-sesongen. Vi gir beskjed god tid i forveien hvis prising innføres.</div>
     </div>
   </div>
 </div>
 
 <hr class="section-divider">
 
-<!-- FAQ -->
-<div class="section" id="faq">
+<div class="section">
   <div class="section-label">FAQ</div>
   <h2>Vanlige spørsmål</h2>
-  <div class="faq" style="margin-top:2rem">
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Er det trygt å laste opp CSV-filen min?<span class="faq-icon">+</span></button>
-      <div class="faq-a">CSV-filen prosesseres 100% lokalt i nettleseren din og sendes aldri til serveren vår. Den inneholder kun transaksjonshistorikk — ingen passord eller private nøkler.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Hvordan laster jeg ned CSV fra børsen min?<span class="faq-icon">+</span></button>
-      <div class="faq-a">Inne i appen finner du en steg-for-steg guide for hver børs. For Coinbase: Assets → (velg mynt) → Transactions → Download report. Vi viser deg nøyaktig hvor.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Hva er FIFO og er det riktig metode?<span class="faq-icon">+</span></button>
-      <div class="faq-a">FIFO betyr "First In, First Out". Skatteetaten krever denne metoden for kryptovaluta i Norge — vi beregner automatisk etter denne regelen.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Hva er staking-inntekt skattemessig?<span class="faq-icon">+</span></button>
-      <div class="faq-a">Staking-inntekt regnes som alminnelig inntekt i Norge og beskattes med 22%. Vi beregner dette automatisk basert på verdien på mottakstidspunktet.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">Hva skjer hvis jeg bruker flere børser?<span class="faq-icon">+</span></button>
-      <div class="faq-a">Du kan laste opp CSV fra alle 5 støttede børser i samme økt. Vi slår transaksjonene sammen automatisk og lager én samlet rapport.</div>
-    </div>
+  <div style="margin-top:2rem">
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Er det virkelig gratis?<span class="faq-icon">+</span></button><div class="faq-a">Ja, helt gratis for skatteåret 2025. Ingen kredittkort, ingen konto, ingen skjulte avgifter. Vi er i oppstartsfasen og ønsker at flest mulig skal prøve tjenesten.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Er det trygt å laste opp CSV-filen min?<span class="faq-icon">+</span></button><div class="faq-a">CSV-filen prosesseres 100% lokalt i nettleseren og sendes aldri til serveren vår. Den inneholder kun transaksjonshistorikk — ingen passord eller private nøkler.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Hvordan laster jeg ned CSV fra børsen min?<span class="faq-icon">+</span></button><div class="faq-a">Inne i appen finner du steg-for-steg guide for hver børs. For Coinbase: Assets → Transactions → Download report.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Hva er FIFO?<span class="faq-icon">+</span></button><div class="faq-a">FIFO betyr "First In, First Out". Skatteetaten krever denne metoden for kryptovaluta i Norge.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Hva er staking-inntekt skattemessig?<span class="faq-icon">+</span></button><div class="faq-a">Staking-inntekt regnes som alminnelig inntekt (22% skatt) i Norge. Vi beregner dette automatisk.</div></div>
   </div>
 </div>
 
-<!-- CTA -->
-<div class="cta-section">
-  <h2>Klar til å gjøre<br>kryptoskatten <em style="font-style:italic;color:var(--green)">ferdig</em>?</h2>
-  <p>Gratis i oppstartsfasen. Tar 2 minutter.</p>
-  <a href="app.html" class="btn-primary">Start nå — helt gratis →</a>
+<hr class="section-divider">
+
+<!-- FEEDBACK -->
+<div class="feedback-section" id="tilbakemelding">
+  <div class="section-label">Tilbakemelding</div>
+  <h2 style="font-family:'Fraunces',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:600;margin-bottom:.75rem">Hva synes du?</h2>
+  <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:2rem">Vi er i beta og ønsker ærlige tilbakemeldinger. Hjelp oss å gjøre tjenesten bedre!</p>
+  <div class="feedback-box">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:.75rem">Din vurdering</div>
+    <div class="stars" id="stars">
+      <span class="star" data-v="1">★</span>
+      <span class="star" data-v="2">★</span>
+      <span class="star" data-v="3">★</span>
+      <span class="star" data-v="4">★</span>
+      <span class="star" data-v="5">★</span>
+    </div>
+    <div class="feedback-meta">
+      <input class="feedback-name" id="fbName" type="text" placeholder="Navn (valgfritt)">
+      <input class="feedback-name" id="fbExchange" type="text" placeholder="Børs du brukte" style="flex:.8">
+    </div>
+    <textarea class="feedback-input" id="fbText" placeholder="Hva fungerte bra? Hva kan vi forbedre? Klarte du å laste inn CSV-filen?"></textarea>
+    <button class="btn-feedback" onclick="submitFeedback()">Send tilbakemelding</button>
+    <div class="sent-msg" id="sentMsg">✓ Takk! Tilbakemeldingen din er mottatt.</div>
+
+    <div class="reviews" id="reviewsList"></div>
+  </div>
 </div>
 
-<!-- FOOTER -->
+<div class="cta-section">
+  <h2>Klar til å gjøre kryptoskatten <em style="font-style:italic;color:var(--green)">ferdig</em>?</h2>
+  <p>Gratis for skatteåret 2025. Tar 2 minutter.</p>
+  <a href="app.html" class="btn-primary">Start nå — 0 kr →</a>
+</div>
+
 <footer>
   <span>© 2026 DineKryptoskatt · <a href="mailto:hei@dinekryptoskatt.no">hei@dinekryptoskatt.no</a></span>
-  <div class="footer-links">
-    <a href="#">Personvern</a>
-    <a href="#">Vilkår</a>
-  </div>
+  <div class="footer-links"><a href="#">Personvern</a><a href="#">Vilkår</a></div>
 </footer>
 
 <script>
-function toggleFaq(btn) {
-  btn.closest('.faq-item').classList.toggle('open');
+function toggleFaq(btn){btn.closest('.faq-item').classList.toggle('open')}
+
+let rating = 0;
+const stars = document.querySelectorAll('.star');
+stars.forEach(s => {
+  s.addEventListener('click', () => {
+    rating = +s.dataset.v;
+    stars.forEach((st,i) => st.classList.toggle('active', i < rating));
+  });
+  s.addEventListener('mouseenter', () => {
+    const v = +s.dataset.v;
+    stars.forEach((st,i) => st.style.opacity = i < v ? '1' : '.3');
+  });
+});
+document.getElementById('stars').addEventListener('mouseleave', () => {
+  stars.forEach((st,i) => st.style.opacity = i < rating ? '1' : '.3');
+});
+
+const REVIEWS_KEY = 'dk_reviews';
+function loadReviews(){
+  try{ return JSON.parse(localStorage.getItem(REVIEWS_KEY)||'[]') }catch{return[]}
 }
+function saveReview(r){
+  const all = loadReviews();
+  all.unshift(r);
+  localStorage.setItem(REVIEWS_KEY, JSON.stringify(all.slice(0,50)));
+}
+function renderReviews(){
+  const list = loadReviews();
+  const el = document.getElementById('reviewsList');
+  if(!list.length){el.innerHTML='';return}
+  el.innerHTML = list.map(r => `
+    <div class="review-card">
+      <div class="review-header">
+        <span class="review-name">${r.name||'Anonym'}${r.exchange?' · '+r.exchange:''}</span>
+        <span class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
+      </div>
+      <div class="review-text">${r.text}</div>
+      <div class="review-date">${r.date}</div>
+    </div>
+  `).join('');
+}
+
+function submitFeedback(){
+  if(!rating){alert('Velg en vurdering (1-5 stjerner)');return}
+  const text = document.getElementById('fbText').value.trim();
+  if(!text){alert('Skriv en kort kommentar');return}
+  const r = {
+    rating,
+    name: document.getElementById('fbName').value.trim(),
+    exchange: document.getElementById('fbExchange').value.trim(),
+    text,
+    date: new Date().toLocaleDateString('nb-NO',{year:'numeric',month:'long',day:'numeric'})
+  };
+  saveReview(r);
+  document.getElementById('fbText').value='';
+  document.getElementById('fbName').value='';
+  document.getElementById('fbExchange').value='';
+  rating=0;
+  stars.forEach(s=>{s.classList.remove('active');s.style.opacity='.3'});
+  const msg = document.getElementById('sentMsg');
+  msg.style.display='block';
+  setTimeout(()=>msg.style.display='none',4000);
+  renderReviews();
+}
+
+renderReviews();
 </script>
 </body>
 </html>
