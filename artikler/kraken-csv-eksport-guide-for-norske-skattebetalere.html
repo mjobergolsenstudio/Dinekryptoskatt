@@ -10,67 +10,74 @@
 <body>
 <header><a href="/">← DineKryptoskatt.no</a></header>
 <main class="artikkel">
-<p class="dato">Publisert: 27. juli 2026</p>
+<p class="dato">Publisert: 26. oktober 2026</p>
 <h1>Kraken CSV-eksport guide for norske skattebetalere</h1>
 <h2>Kraken CSV-eksport guide for norske skattebetalere</h2>
 
-<p>Som norsk kryptoinvestor er du pliktig til å rapportere alle dine kryptotransaksjoner til Skatteetaten. Kraken er en av verdens mest populære kryptobørser, og heldigvis tilbyr plattformen enkle verktøy for å eksportere transaksjonshistorikken din. I denne guiden viser vi deg steg for steg hvordan du eksporterer CSV-filer fra Kraken og bruker dem til å oppfylle dine skatteforpliktelser i Norge.</p>
+<p>Som norsk kryptoinvestor er du pliktig til å rapportere alle dine kryptovalutatransaksjoner til Skatteetaten. Kraken er en av de mest populære kryptobørsene blant nordmenn, og heldigvis tilbyr plattformen enkle verktøy for å eksportere transaksjonshistorikken din. I denne guiden viser vi deg steg for steg hvordan du laster ned CSV-filer fra Kraken og bruker dem til korrekt skatterapportering i Norge.</p>
 
-<h2>Hvorfor du trenger CSV-eksport fra Kraken</h2>
+<h2>Slik eksporterer du transaksjonshistorikk fra Kraken</h2>
 
-<p>I Norge må du rapportere alle gevinster og tap fra kryptovaluta i skattemeldingen din. Skatteetaten krever dokumentasjon på alle transaksjoner, inkludert kjøp, salg, bytte mellom kryptovalutaer, og overføringer. CSV-filer fra Kraken gir deg en komplett oversikt over all aktivitet på kontoen din.</p>
-
-<p>Disse filene inneholder viktig informasjon som:</p>
+<p>For å hente ut dine transaksjonsdata fra Kraken, følg disse trinnene:</p>
 
 <ul>
-<li>Dato og tidspunkt for hver transaksjon</li>
-<li>Type transaksjon (kjøp, salg, innskudd, uttak)</li>
-<li>Mengde kryptovaluta involvert</li>
-<li>Pris i fiat-valuta på transaksjonstidspunktet</li>
-<li>Gebyrer betalt til børsen</li>
-<li>Handelspar og referanse-ID</li>
+<li>Logg inn på din Kraken-konto via nettleseren på desktop</li>
+<li>Klikk på profilnavnet ditt øverst til høyre og velg "History"</li>
+<li>Velg "Export" fra menyen for å åpne eksportverktøyet</li>
+<li>Under "Report Type" velger du "Ledger" for en komplett transaksjonshistorikk</li>
+<li>Angi datoperioden som dekker hele skatteåret (1. januar til 31. desember)</li>
+<li>Velg "CSV" som filformat og klikk "Submit"</li>
+<li>Vent til rapporten er klar, og last ned filen fra "Export"-seksjonen</li>
 </ul>
 
-<p>Denne dokumentasjonen er essensiell for å beregne skattepliktig gevinst eller fradragsberettiget tap etter FIFO-prinsippet (først inn, først ut), som Skatteetaten anbefaler for kryptovaluta.</p>
+<p>Det anbefales å eksportere både "Ledger"-rapporten og "Trades"-rapporten. Ledger-rapporten gir deg oversikt over alle bevegelser på kontoen, mens Trades-rapporten viser spesifikke kjøp og salg med priser.</p>
 
-<h2>Steg-for-steg: Slik eksporterer du CSV fra Kraken</h2>
+<h2>Forstå innholdet i Kraken CSV-filen</h2>
 
-<p>Følg disse trinnene for å laste ned transaksjonshistorikken din fra Kraken:</p>
+<p>Når du åpner CSV-filen i Excel eller Google Sheets, vil du se flere kolonner med viktig informasjon. Her er de mest relevante for skatteformål:</p>
 
 <ul>
-<li><strong>Logg inn på Kraken:</strong> Gå til kraken.com og logg inn med dine påloggingsdetaljer. Sørg for at du bruker tofaktorautentisering for sikkerhetens skyld.</li>
-<li><strong>Naviger til History:</strong> Klikk på ditt profilikon øverst til høyre, og velg "History" eller "Historikk" fra menyen.</li>
-<li><strong>Velg Export:</strong> Finn og klikk på "Export"-knappen som vanligvis ligger øverst på historikksiden.</li>
-<li><strong>Velg tidsperiode:</strong> Angi datointervallet du ønsker å eksportere. For skatteformål bør du velge hele kalenderåret (1. januar til 31. desember).</li>
-<li><strong>Velg eksporttype:</strong> Kraken tilbyr flere eksportformater. Velg "Ledger" for en komplett oversikt over alle transaksjoner, eller "Trades" for kun handelsaktivitet.</li>
-<li><strong>Last ned filen:</strong> Klikk på "Submit" eller "Export", og vent på at filen genereres. Du får en nedlastingslenke når filen er klar.</li>
+<li><strong>refid:</strong> Unik referanse-ID for hver transaksjon</li>
+<li><strong>time:</strong> Tidspunkt for transaksjonen i UTC-tid</li>
+<li><strong>type:</strong> Type transaksjon (trade, deposit, withdrawal, staking)</li>
+<li><strong>subtype:</strong> Mer detaljert beskrivelse av transaksjonstypen</li>
+<li><strong>asset:</strong> Hvilken kryptovaluta eller fiat-valuta som er involvert</li>
+<li><strong>amount:</strong> Beløpet som ble kjøpt, solgt eller overført</li>
+<li><strong>fee:</strong> Eventuelle gebyrer knyttet til transaksjonen</li>
+<li><strong>balance:</strong> Din saldo etter transaksjonen</li>
 </ul>
 
-<p>Merk at større eksporter kan ta noen minutter å generere. Kraken sender deg en e-postvarsling når filen er klar for nedlasting.</p>
+<p>Vær oppmerksom på at Kraken bruker egne valutakoder. For eksempel representerer "XXBT" Bitcoin (BTC), og "ZEUR" representerer Euro. Du må konvertere alle beløp til norske kroner basert på valutakursen på transaksjonstidspunktet.</p>
 
-<h2>Hvordan bruke CSV-filen til norsk skatteberegning</h2>
+<h2>Norske skatteregler for kryptovaluta</h2>
 
-<p>Når du har lastet ned CSV-filen, må du behandle dataene for skatteberegning. Her er dine alternativer:</p>
-
-<p><strong>Manuell beregning:</strong> Du kan åpne CSV-filen i Excel eller Google Sheets og beregne gevinst og tap manuelt. Dette krever god forståelse av FIFO-metoden og kan være tidkrevende ved mange transaksjoner.</p>
-
-<p><strong>Bruk kryptoskatteverktøy:</strong> Tjenester som Koinly, CoinTracking eller Accointing kan importere Kraken CSV-filer direkte og automatisk beregne skattepliktig gevinst etter norske regler. Mange av disse støtter også direkte rapportformat for norsk skattemelding.</p>
-
-<p>Husk at gevinst fra kryptovaluta beskattes som kapitalinntekt med en skattesats på 22 prosent i Norge. Tap kan fradragsføres mot andre kapitalinntekter.</p>
-
-<h2>Viktige tips for norske Kraken-brukere</h2>
+<p>I Norge beskattes kryptovaluta som formuesobjekt, og du må rapportere følgende til Skatteetaten:</p>
 
 <ul>
-<li>Eksporter data regelmessig gjennom året for å unngå stress ved skattetid</li>
-<li>Ta vare på alle CSV-filer i minst fem år som dokumentasjon</li>
-<li>Husk å inkludere staking-rewards og andre inntekter som skattepliktig inntekt</li>
-<li>Sjekk at alle transaksjoner er med, spesielt ved overføringer til andre lommebøker</li>
-<li>Konverter alle beløp til NOK basert på valutakursen på transaksjonstidspunktet</li>
+<li><strong>Formue:</strong> Total verdi av dine kryptobeholdninger per 31. desember, omregnet til NOK</li>
+<li><strong>Gevinst ved salg:</strong> Beskattes som kapitalinntekt med 22% skattesats</li>
+<li><strong>Tap ved salg:</strong> Kan føres til fradrag mot andre kapitalinntekter</li>
+<li><strong>Staking-inntekter:</strong> Beskattes som kapitalinntekt når de mottas</li>
+<li><strong>Mining-inntekter:</strong> Kan regnes som næringsinntekt ved større omfang</li>
+</ul>
+
+<p>Gevinst og tap beregnes etter FIFO-prinsippet (First In, First Out). Dette betyr at når du selger kryptovaluta, anses de eldste enhetene du kjøpte som solgt først. Skatteetaten krever dokumentasjon på alle transaksjoner, så ta vare på CSV-filene dine.</p>
+
+<h2>Tips for effektiv skatterapportering</h2>
+
+<p>For å gjøre skattemeldingen enklere, anbefaler vi følgende fremgangsmåte:</p>
+
+<ul>
+<li>Eksporter data fra Kraken kvartalsvis for å unngå store datamengder på slutten av året</li>
+<li>Bruk en dedikert kryptoskatt-programvare som Koinly, CoinTracking eller Accointing som kan importere Kraken CSV-filer automatisk</li>
+<li>Dokumenter innskuddskildene dine for å kunne bevise lovlig opphav til midlene</li>
+<li>Husk å inkludere transaksjoner fra alle børser og wallets du bruker</li>
+<li>Kontroller at summen av beholdninger i skattemeldingen stemmer med faktisk saldo</li>
 </ul>
 
 <h2>Konklusjon</h2>
 
-<p>Å eksportere CSV-filer fra Kraken er en enkel prosess som gir deg all dokumentasjonen du trenger for å oppfylle dine skatteforpliktelser i Norge. Ved å følge denne guiden kan du enkelt hente ut transaksjonshistorikken din og bruke den til nøyaktig skatteberegning. Enten du velger manuell beregning eller automatiserte verktøy, er god dokumentasjon nøkkelen til en problemfri skatterapportering. Start med å eksportere dine data i dag, så er du godt forberedt når skattemeldingen skal leveres.</p>
+<p>Å eksportere CSV-filer fra Kraken er en enkel prosess som gir deg all nødvendig dokumentasjon for norsk skatterapportering. Ved å følge denne guiden sikrer du at du har korrekt oversikt over dine kryptotransaksjoner og kan beregne gevinst, tap og formue i henhold til norske skatteregler. Husk at Skatteetaten har økt fokus på kryptovaluta, og korrekt rapportering er både lovpålagt og i din egen interesse. Har du komplekse transaksjoner eller stor portefølje, kan det være lurt å konsultere en regnskapsfører med kryptokompetanse.</p>
 <div class="cta-boks">
   <p>Klar til å beregne kryptoskatten din?</p>
   <a href="/app.html">Prøv appen vår gratis →</a>
